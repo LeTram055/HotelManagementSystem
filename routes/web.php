@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\RoomStatusController;
 use App\Http\Controllers\Admin\FacilityController;
+use App\Http\Controllers\Admin\TypeController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -56,3 +57,28 @@ Route::post('admin/facility/update',
 Route::post('/admin/facility/delete', 
 [FacilityController::class, 'destroy'])
 ->name('admin.facility.delete');
+
+//type
+Route::get('/admin/type', 
+[TypeController::class, 'index'])
+    ->name('admin.type.index');
+
+Route::get('/admin/type/create', 
+[TypeController::class, 'create'])
+    ->name('admin.type.create');
+
+Route::post('admin/type/save',
+[TypeController::class, 'save'])
+->name('admin.type.save');
+
+Route::get('/admin/type/edit', 
+[TypeController::class, 'edit'])
+    ->name('admin.type.edit');
+
+Route::post('admin/type/update',
+[TypeController::class, 'update'])
+->name('admin.type.update');
+
+Route::post('/admin/type/delete', 
+[TypeController::class, 'destroy'])
+->name('admin.type.delete');
