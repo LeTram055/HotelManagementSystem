@@ -24,19 +24,19 @@ Quản lý thiết bị
     <table class="table table-striped table-sm">
         <thead>
             <tr>
-                <th>Mã thiết bị</th>
-                <th>Tên thiết bị</th>
-                <th>Mô tả thiết bị</th>
-                <th>Hành động</th>
+                <th class="text-center">Mã thiết bị</th>
+                <th class="text-center">Tên thiết bị</th>
+                <th class="text-center">Mô tả thiết bị</th>
+                <th class="text-center">Hành động</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($facilities as $facility)
             <tr>
-                <td>{{ $facility->facility_id }}</td>
+                <td class="text-center">{{ $facility->facility_id }}</td>
                 <td>{{ $facility->facility_name }}</td>
                 <td>{{ $facility->facility_description }}</td>
-                <td>
+                <td class="d-flex justify-content-center">
                     <div class="d-flex">
                         <a href="{{ route('admin.facility.edit', ['facility_id' => $facility->facility_id]) }}"
                             class="btn btn-warning btn-sm">Sửa</a>

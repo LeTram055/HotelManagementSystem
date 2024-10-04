@@ -24,17 +24,17 @@ Quản lý trạng thái phòng
     <table class="table table-striped table-sm">
         <thead>
             <tr>
-                <th>Mã</th>
-                <th>Tên</th>
-                <th>Hành động</th>
+                <th class="text-center">Mã</th>
+                <th class="text-center">Tên</th>
+                <th class="text-center">Hành động</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($roomStatuses as $roomStatus)
             <tr>
-                <td>{{ $roomStatus->status_id }}</td>
+                <td class="text-center">{{ $roomStatus->status_id }}</td>
                 <td>{{ $roomStatus->status_name }}</td>
-                <td>
+                <td class="d-flex justify-content-center">
                     <div class="d-flex">
                         <a href="{{ route('admin.roomstatus.edit', ['status_id' => $roomStatus->status_id]) }}"
                             class="btn btn-warning btn-sm">Sửa</a>
