@@ -12,7 +12,7 @@ Quản lý thiết bị
 <div class="row justify-content-center">
     <div class="col-6 border rounded-1 p-3">
         <h3 class="text-center title2">Cập nhật thiết bị</h3>
-        <form name="frmCreate" id="frmCreate" method="post" action="{{ route('admin.facility.update') }}">
+        <form name="frmEdit" id="frmCreate" method="post" action="{{ route('admin.facility.update') }}">
             @csrf
             <input type="hidden" name="facility_id" value="{{ $facility->facility_id }}">
             <div class="form-group">

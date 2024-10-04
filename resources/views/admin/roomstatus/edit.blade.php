@@ -12,7 +12,7 @@ Quản lý trạng thái phòng
 <div class="row justify-content-center">
     <div class="col-6 border rounded-1 p-3">
         <h3 class="text-center title2">Cập nhật trạng thái phòng</h3>
-        <form name="frmCreate" id="frmCreate" method="post" action="{{ route('admin.roomstatus.update') }}">
+        <form name="frmEdit" id="frmCreate" method="post" action="{{ route('admin.roomstatus.update') }}">
             @csrf
             <input type="hidden" name="status_id" value="{{ $roomStatus->status_id }}">
             <div class="form-group">

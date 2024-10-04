@@ -30,14 +30,14 @@ Quản lý loại phòng
                 @enderror
             </div>
             <div class="form-group">
-                <label for="type_capacity">Sức chứa</label>
+                <label for="type_capacity">Sức chứa:</label>
                 <input type="text" class="form-control" id="type_capacity" name="type_capacity" value="">
                 @error('type_capacity')
                 <small id="type_capacity" class="form-text text-danger">{{ $message }}</small>
                 @enderror
             </div>
             <div class="form-group">
-                <label for="type_area">Diện tích</label>
+                <label for="type_area">Diện tích:</label>
                 <input type="text" class="form-control" id="type_area" name="type_area" value="">
                 @error('type_area')
                 <small id="type_area" class="form-text text-danger">{{ $message }}</small>

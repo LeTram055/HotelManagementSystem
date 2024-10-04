@@ -12,7 +12,7 @@ Quản lý loại phòng
 <div class="row justify-content-center">
     <div class="col-6 border rounded-1 p-3">
         <h3 class="text-center title2">Cập nhật loại phòng</h3>
-        <form name="frmCreate" id="frmCreate" method="post" action="{{ route('admin.type.update') }}">
+        <form name="frmEdit" id="frmCreate" method="post" action="{{ route('admin.type.update') }}">
             @csrf
             <input type="hidden" name="type_id" value="{{ $type->type_id }}">
 
@@ -32,7 +32,7 @@ Quản lý loại phòng
                 @enderror
             </div>
             <div class="form-group">
-                <label for="type_capacity">Sức chứa</label>
+                <label for="type_capacity">Sức chứa:</label>
                 <input type="text" class="form-control" id="type_capacity" name="type_capacity"
                     value="{{ $type->type_capacity }}">
                 @error('type_capacity')
@@ -40,7 +40,7 @@ Quản lý loại phòng
                 @enderror
             </div>
             <div class="form-group">
-                <label for="type_area">Diện tích</label>
+                <label for="type_area">Diện tích:</label>
                 <input type="text" class="form-control" id="type_area" name="type_area" value="{{ $type->type_area }}">
                 @error('type_area')
                 <small id="type_area" class="form-text text-danger">{{ $message }}</small>

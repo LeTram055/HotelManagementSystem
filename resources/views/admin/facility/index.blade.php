@@ -18,7 +18,7 @@ Quản lý thiết bị
     @endforeach
 </div>
 
-<a href="{{ route('admin.facility.create') }}" class="btn btn-primary mb-3">Thêm mới sản phẩm</a>
+<a href="{{ route('admin.facility.create') }}" class="btn btn-primary mb-3">Thêm mới</a>
 
 <div class="table-responsive ">
     <table class="table table-striped table-sm">
