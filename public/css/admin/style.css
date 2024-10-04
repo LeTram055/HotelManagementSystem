@@ -1,0 +1,76 @@
+.navbar-bg {
+    background-color: #026269;
+    position: sticky !important;
+    width: 100%;
+    top: 0;
+    z-index: 100;
+    color: white;
+    font-weight: 600;
+}
+
+.sidebar {
+    height: 100vh;
+    background-color: #f8f9fa;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    z-index: 99;
+    overflow-y: auto;
+    padding-top: 60px;
+    transition: transform 0.3s ease, width 0.3s ease; /* Thêm hiệu ứng chuyển động */
+}
+
+.sidebar.collapsed {
+    width: 80px; /* Thu nhỏ sidebar */
+}
+
+#main-content {
+    margin-left: 250px;
+    padding-top: 60px;
+    transition: margin-left 0.3s ease; /* Thêm hiệu ứng chuyển động */
+}
+
+#main-content.expanded {
+    margin-left: 80px; /* Điều chỉnh margin khi sidebar thu nhỏ */
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-250px); /* Ẩn sidebar trên màn hình nhỏ */
+    }
+
+    .sidebar.active {
+        transform: translateX(0); /* Hiển thị sidebar khi mở */
+    }
+
+    #main-content {
+        margin-left: 0; /* Đặt lại margin cho nội dung chính */
+    }
+
+    #main-content.expanded {
+        margin-left: 250px; /* Điều chỉnh margin khi sidebar mở */
+    }
+
+    .sidebar-toggle {
+        display: block; /* Hiển thị nút toggle trên màn hình nhỏ */
+    }
+}
+
+.sidebar-toggle {
+    display: none; /* Ẩn nút toggle trên màn hình lớn */
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 100;
+    background-color: #026269;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.title2 {
+    font-weight: 600;
+    color: #026269;
+}
