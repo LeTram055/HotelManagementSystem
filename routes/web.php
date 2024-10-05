@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\RoomStatusController;
 use App\Http\Controllers\Admin\FacilityController;
 use App\Http\Controllers\Admin\TypeController;
 use App\Http\Controllers\Admin\RoomController;
+use App\Http\Controllers\Admin\TypeImageController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -108,3 +109,28 @@ Route::post('admin/room/update',
 Route::post('/admin/room/delete', 
 [RoomController::class, 'destroy'])
 ->name('admin.room.delete');
+
+//TypeImages
+Route::get('/admin/typeimage', 
+[TypeImageController::class, 'index'])
+    ->name('admin.typeimage.index');
+
+Route::get('/admin/typeimage/create', 
+[TypeImageController::class, 'create'])
+    ->name('admin.typeimage.create');
+
+Route::post('admin/typeimage/save',
+[TypeImageController::class, 'save'])
+->name('admin.typeimage.save');
+
+Route::get('/admin/typeimage/edit', 
+[TypeImageController::class, 'edit'])
+    ->name('admin.typeimage.edit');
+
+Route::post('admin/typeimage/update',
+[TypeImageController::class, 'update'])
+->name('admin.typeimage.update');
+
+Route::post('/admin/typeimage/delete', 
+[TypeImageController::class, 'destroy'])
+->name('admin.typeimage.delete');

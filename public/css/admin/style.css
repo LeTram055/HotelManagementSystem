@@ -74,3 +74,9 @@
     font-weight: 600;
     color: #026269;
 }
+
+.img-type {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+}
