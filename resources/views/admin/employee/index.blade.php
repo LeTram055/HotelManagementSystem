@@ -41,7 +41,7 @@ Quản lý nhân viên
                 <td>{{ $employee->employee_phone}}</td>
                 <td>{{ $employee->employee_address}}</td>
                 <td>{{ $employee->employee_status}}</td>
-                <td class="text-center">{{ $employee->user_id }}</td>
+                <td class="text-center">{{ $employee->account_id }}</td>
                 <td>
                     <div class="d-flex justify-content-center">
                         <a href="{{ route('admin.employee.edit', ['employee_id' => $employee->employee_id]) }}"

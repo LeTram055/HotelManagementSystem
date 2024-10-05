@@ -39,7 +39,7 @@ Quản lý khách hàng
                 <td>{{ $customer->customer_name }}</td>
                 <td>{{ $customer->customer_phone}}</td>
                 <td>{{ $customer->customer_address}}</td>
-                <td class="text-center">{{ $customer->user_id }}</td>
+                <td class="text-center">{{ $customer->account_id }}</td>
                 <td>
                     <div class="d-flex justify-content-center">
                         <a href="{{ route('admin.customer.edit', ['customer_id' => $customer->customer_id]) }}"

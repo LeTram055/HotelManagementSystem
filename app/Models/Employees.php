@@ -14,15 +14,15 @@ class Employees extends Model
         'employee_phone',
         'employee_address',
         'employee_status',
-        'user_id',
+        'account_id',
     ];
     protected $guarded = ['employee_id'];
     protected $primaryKey = 'employee_id';
     public $timestamps = false;
 
-    public function user()
+    public function account()
     {
-        return $this->belongsTo(Users::class, 'user_id', 'user_id');
+        return $this->belongsTo(Accounts::class, 'account_id', 'account_id');
     }
 
     public function payments()

@@ -13,15 +13,15 @@ class Customers extends Model
         'customer_name',
         'customer_phone',
         'customer_address',
-        'user_id',
+        'account_id',
     ];
     protected $guarded = ['customer_id'];
     protected $primaryKey = 'customer_id';
     public $timestamps = false;
 
-    public function user()
+    public function account()
     {
-        return $this->belongsTo(Users::class, 'user_id', 'user_id');
+        return $this->belongsTo(Accounts::class, 'account_id', 'account_id');
     }
 
     public function reservations()
