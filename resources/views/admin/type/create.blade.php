@@ -43,6 +43,20 @@ Quản lý loại phòng
                 <small id="type_area" class="form-text text-danger">{{ $message }}</small>
                 @enderror
             </div>
+            <div class="form-group">
+                <label for="facilities">Tiện nghi: </label>
+
+                @foreach($facilities as $facility)
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" name="facilities[]"
+                        value="{{ $facility->facility_id }}">
+                    <label class="form-check-label"
+                        for="facility_{{ $facility->facility_id }}">{{ $facility->facility_name }} -
+                        {{ $facility->facility_description }}</label>
+                </div>
+                @endforeach
+            </div>
+
             <button type="submit" name="submit" class="btn btn-primary my-2">Lưu</button>
         </form>
     </div>

@@ -12,7 +12,7 @@ Quản lý loại phòng
 <div class="row justify-content-center">
     <div class="col-6 border rounded-1 p-3">
         <h3 class="text-center title2">Cập nhật loại phòng</h3>
-        <form name="frmEdit" id="frmCreate" method="post" action="{{ route('admin.type.update') }}">
+        <form name="frmEdit" id="frmEdit" method="post" action="{{ route('admin.type.update') }}">
             @csrf
             <input type="hidden" name="type_id" value="{{ $type->type_id }}">
 
@@ -45,6 +45,19 @@ Quản lý loại phòng
                 @error('type_area')
                 <small id="type_area" class="form-text text-danger">{{ $message }}</small>
                 @enderror
+            </div>
+            <div class="form-group">
+                <label for="facilities">Tiện nghi:</label><br>
+                @foreach ($facilities as $facility)
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="facilities[]"
+                        value="{{ $facility->facility_id }}"
+                        {{ $type->facilities->contains($facility->facility_id) ? 'checked' : '' }}>
+                    <label class="form-check-label" for="facility_{{ $facility->facility_id }}">
+                        {{ $facility->facility_name }} - {{ $facility->facility_description }}
+                    </label>
+                </div>
+                @endforeach
             </div>
             <button type="submit" name="submit" class="btn btn-primary my-2">Lưu</button>
         </form>

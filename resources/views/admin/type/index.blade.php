@@ -29,6 +29,7 @@ Quản lý loại phòng
                 <th class="text-center">Giá (VNĐ)</th>
                 <th class="text-center">Sức chứa (người)</th>
                 <th class="text-center">Diện tích (m2)</th>
+                <th class="text-center">Tiện nghi</th>
                 <th class="text-center">Hành động</th>
             </tr>
         </thead>
@@ -40,6 +41,13 @@ Quản lý loại phòng
                 <td class="text-end">{{ $type->type_price }}</td>
                 <td class="text-center">{{ $type->type_capacity }}</td>
                 <td class="text-center">{{ $type->type_area }}</td>
+                <td>
+                    <ul>
+                        @foreach($type->facilities as $facility)
+                        <li>{{ $facility->facility_name }} - {{ $facility->facility_description }}</li>
+                        @endforeach
+                    </ul>
+                </td>
                 <td>
                     <div class="d-flex justify-content-center">
                         <a href="{{ route('admin.type.edit', ['type_id' => $type->type_id]) }}"
