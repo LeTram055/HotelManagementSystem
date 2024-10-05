@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\TypeController;
 use App\Http\Controllers\Admin\RoomController;
 use App\Http\Controllers\Admin\TypeImageController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\EmployeeController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -160,3 +162,28 @@ Route::post('admin/customer/update',
 Route::post('/admin/customer/delete', 
 [CustomerController::class, 'destroy'])
 ->name('admin.customer.delete');
+
+//employee
+Route::get('/admin/employee', 
+[EmployeeController::class, 'index'])
+    ->name('admin.employee.index');
+
+Route::get('/admin/employee/create', 
+[EmployeeController::class, 'create'])
+    ->name('admin.employee.create');
+
+Route::post('admin/employee/save',
+[EmployeeController::class, 'save'])
+->name('admin.employee.save');
+
+Route::get('/admin/employee/edit', 
+[EmployeeController::class, 'edit'])
+    ->name('admin.employee.edit');
+
+Route::post('admin/employee/update',
+[EmployeeController::class, 'update'])
+->name('admin.employee.update');
+
+Route::post('/admin/employee/delete', 
+[EmployeeController::class, 'destroy'])
+->name('admin.employee.delete');
