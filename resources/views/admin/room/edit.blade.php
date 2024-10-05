@@ -12,7 +12,7 @@ Quản lý trạng thái phòng
 <div class="row justify-content-center">
     <div class="col-6 border rounded-1 p-3">
         <h3 class="text-center title2">Cập nhật phòng</h3>
-        <form name="frmEdit" id="frmCreate" method="post" action="{{ route('admin.room.update') }}">
+        <form name="frmEdit" id="frmEdit" method="post" action="{{ route('admin.room.update') }}">
             @csrf
             <input type="hidden" name="room_id" value="{{ $room->room_id }}">
 

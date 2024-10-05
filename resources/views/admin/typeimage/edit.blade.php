@@ -12,7 +12,7 @@ Quản lý hình ảnh loại phòng
 <div class="row justify-content-center">
     <div class="col-6 border rounded-1 p-3">
         <h3 class="text-center title2">Cập nhật hình ảnh loại phòng</h3>
-        <form name="frmEdit" id="frmCreate" method="post" enctype="multipart/form-data"
+        <form name="frmEdit" id="frmEdit" method="post" enctype="multipart/form-data"
             action="{{ route('admin.typeimage.update') }}">
             @csrf
             <input type="hidden" name="image_id" value="{{ $typeImage->image_id }}">
