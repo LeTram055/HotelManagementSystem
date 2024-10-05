@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use App\Models\Facilities;
 
@@ -26,6 +27,7 @@ class FacilityController extends Controller
         $facility->facility_name = $request->facility_name;
         $facility->facility_description = $request->facility_description;
         $facility->save();
+        Session::flash('alert-info', 'Thêm mới thành công ^^~!!!');
         return redirect()->route('admin.facility.index');
     }
 
@@ -42,6 +44,7 @@ class FacilityController extends Controller
         $facility->facility_name = $request->facility_name;
         $facility->facility_description = $request->facility_description;
         $facility->save();
+        Session::flash('alert-info', 'Cập nhật thành công ^^~!!!');
         return redirect()->route('admin.facility.index');
     }
     
@@ -53,6 +56,7 @@ class FacilityController extends Controller
         
         $facility = Facilities::find($request->facility_id);
         $facility->destroy($request->facility_id);
+        Session::flash('alert-info', 'Xóa thành công ^^~!!!');
         return redirect()->route('admin.facility.index');
     }
 }

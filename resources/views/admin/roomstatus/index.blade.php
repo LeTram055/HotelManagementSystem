@@ -34,8 +34,8 @@ Quản lý trạng thái phòng
             <tr>
                 <td class="text-center">{{ $roomStatus->status_id }}</td>
                 <td>{{ $roomStatus->status_name }}</td>
-                <td class="d-flex justify-content-center">
-                    <div class="d-flex">
+                <td>
+                    <div class="d-flex justify-content-center">
                         <a href="{{ route('admin.roomstatus.edit', ['status_id' => $roomStatus->status_id]) }}"
                             class="btn btn-warning btn-sm">Sửa</a>
                         <form class="mx-1" name=frmDelete method="post" action="{{ route('admin.roomstatus.delete') }}">

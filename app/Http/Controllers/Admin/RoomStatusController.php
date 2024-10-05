@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use App\Models\RoomStatuses;
 
@@ -25,6 +26,7 @@ class RoomStatusController extends Controller
         $roomStatus = new RoomStatuses();
         $roomStatus->status_name = $request->status_name;
         $roomStatus->save();
+        Session::flash('alert-info', 'Thêm mới thành công ^^~!!!');
         return redirect()->route('admin.roomstatus.index');
     }
 
@@ -40,6 +42,7 @@ class RoomStatusController extends Controller
         $roomStatus = RoomStatuses::find($request->status_id);
         $roomStatus->status_name = $request->status_name;
         $roomStatus->save();
+        Session::flash('alert-info', 'Cập nhật thành công ^^~!!!');
         return redirect()->route('admin.roomstatus.index');
     }
     
@@ -51,6 +54,7 @@ class RoomStatusController extends Controller
         
         $roomStatus = RoomStatuses::find($request->status_id);
         $roomStatus->destroy($request->status_id);
+        Session::flash('alert-info', 'Xóa thành công ^^~!!!');
         return redirect()->route('admin.roomstatus.index');
     }
 }

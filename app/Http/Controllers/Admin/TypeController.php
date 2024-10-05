@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use App\Models\Types;
 
@@ -28,6 +29,7 @@ class TypeController extends Controller
         $type->type_capacity = $request->type_capacity;
         $type->type_area = $request->type_area;
         $type->save();
+        Session::flash('alert-info', 'Thêm mới thành công ^^~!!!');
         return redirect()->route('admin.type.index');
     }
 
@@ -46,6 +48,7 @@ class TypeController extends Controller
         $type->type_capacity = $request->type_capacity;
         $type->type_area = $request->type_area;
         $type->save();
+        Session::flash('alert-info', 'Cập nhật thành công ^^~!!!');
         return redirect()->route('admin.type.index');
     }
     
@@ -57,6 +60,7 @@ class TypeController extends Controller
         
         $type = Types::find($request->type_id);
         $type->destroy($request->type_id);
+        Session::flash('alert-info', 'Xóa thành công ^^~!!!');
         return redirect()->route('admin.type.index');
     }
 }

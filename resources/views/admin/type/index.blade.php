@@ -40,8 +40,8 @@ Quản lý loại phòng
                 <td class="text-end">{{ $type->type_price }}</td>
                 <td class="text-center">{{ $type->type_capacity }}</td>
                 <td class="text-center">{{ $type->type_area }}</td>
-                <td class="d-flex justify-content-center">
-                    <div class="d-flex">
+                <td>
+                    <div class="d-flex justify-content-center">
                         <a href="{{ route('admin.type.edit', ['type_id' => $type->type_id]) }}"
                             class="btn btn-warning btn-sm">Sửa</a>
                         <form class="mx-1" name=frmDelete method="post" action="{{ route('admin.type.delete') }}">
