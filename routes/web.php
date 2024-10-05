@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\FacilityController;
 use App\Http\Controllers\Admin\TypeController;
 use App\Http\Controllers\Admin\RoomController;
 use App\Http\Controllers\Admin\TypeImageController;
+use App\Http\Controllers\Admin\CustomerController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -134,3 +135,28 @@ Route::post('admin/typeimage/update',
 Route::post('/admin/typeimage/delete', 
 [TypeImageController::class, 'destroy'])
 ->name('admin.typeimage.delete');
+
+//customer
+Route::get('/admin/customer', 
+[CustomerController::class, 'index'])
+    ->name('admin.customer.index');
+
+Route::get('/admin/customer/create', 
+[CustomerController::class, 'create'])
+    ->name('admin.customer.create');
+
+Route::post('admin/customer/save',
+[CustomerController::class, 'save'])
+->name('admin.customer.save');
+
+Route::get('/admin/customer/edit', 
+[CustomerController::class, 'edit'])
+    ->name('admin.customer.edit');
+
+Route::post('admin/customer/update',
+[CustomerController::class, 'update'])
+->name('admin.customer.update');
+
+Route::post('/admin/customer/delete', 
+[CustomerController::class, 'destroy'])
+->name('admin.customer.delete');
