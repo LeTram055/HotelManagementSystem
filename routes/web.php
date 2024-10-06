@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\RoomController;
 use App\Http\Controllers\Admin\TypeImageController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\EmployeeController;
+use App\Http\Controllers\Admin\AccountController;
 
 
 Route::get('/', function () {
@@ -187,3 +188,28 @@ Route::post('admin/employee/update',
 Route::post('/admin/employee/delete', 
 [EmployeeController::class, 'destroy'])
 ->name('admin.employee.delete');
+
+//account
+Route::get('/admin/account', 
+[AccountController::class, 'index'])
+    ->name('admin.account.index');
+
+Route::get('/admin/account/create', 
+[AccountController::class, 'create'])
+    ->name('admin.account.create');
+
+Route::post('admin/account/save',
+[AccountController::class, 'save'])
+->name('admin.account.save');
+
+Route::get('/admin/account/edit', 
+[AccountController::class, 'edit'])
+    ->name('admin.account.edit');
+
+Route::post('admin/account/update',
+[AccountController::class, 'update'])
+->name('admin.account.update');
+
+Route::post('/admin/account/delete', 
+[AccountController::class, 'destroy'])
+->name('admin.account.delete');
