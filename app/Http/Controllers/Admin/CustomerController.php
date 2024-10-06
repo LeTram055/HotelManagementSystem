@@ -23,11 +23,11 @@ class CustomerController extends Controller
     public function save(Request $request)
     {
         $request->validate([
-            'customer_phone' => 'required|string|regex:/^[0][0-9]{9}$/'
+            'customer_cccd' => 'required|string|regex:/^[0-9]{12}$/'
         ]);
         $customer = new Customers();
         $customer->customer_name = $request->customer_name;
-        $customer->customer_phone= $request->customer_phone;
+        $customer->customer_cccd= $request->customer_cccd;
         $customer->customer_email = $request->customer_email;
         $customer->customer_address= $request->customer_address;
         $customer->save();
@@ -45,12 +45,12 @@ class CustomerController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'customer_phone' => 'required|string|regex:/^[0][0-9]{9}$/'
+            'customer_cccd' => 'required|string|regex:/^[0-9]{12}$/'
         ]);
         
         $customer = Customers::find($request->customer_id);
         $customer->customer_name = $request->customer_name;
-        $customer->customer_phone = $request->customer_phone;
+        $customer->customer_cccd = $request->customer_cccd;
         $customer->customer_email = $request->customer_email;
         $customer->customer_address= $request->customer_address;
         $customer->save();

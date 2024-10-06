@@ -26,7 +26,7 @@ Quản lý khách hàng
             <tr>
                 <th class="text-center">Mã khách hàng</th>
                 <th class="text-center">Tên khách hàng</th>
-                <th class="text-center">Số điện thoại</th>
+                <th class="text-center">Căn cước công dân</th>
                 <th class="text-center">Email</th>
                 <th class="text-center">Địa chỉ</th>
                 <th class="text-center">Mã tài khoản</th>
@@ -38,7 +38,7 @@ Quản lý khách hàng
             <tr>
                 <td class="text-center">{{ $customer->customer_id }}</td>
                 <td>{{ $customer->customer_name }}</td>
-                <td>{{ $customer->customer_phone}}</td>
+                <td>{{ $customer->customer_cccd}}</td>
                 <td>{{ $customer->customer_email}}</td>
                 <td>{{ $customer->customer_address}}</td>
                 <td class="text-center">{{ $customer->account_id }}</td>

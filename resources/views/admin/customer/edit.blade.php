@@ -25,11 +25,11 @@ Quản lý khách hàng
                 @enderror
             </div>
             <div class="form-group">
-                <label for="customer_phone">Số điện thoại:</label>
-                <input type="text" class="form-control" id="customer_phone" name="customer_phone"
-                    value="{{ $customer->customer_phone }}">
-                @error('customer_phone')
-                <small id="customer_phone" class="form-text text-danger">{{ $message }}</small>
+                <label for="customer_cccd">Căn cước công dân:</label>
+                <input type="text" class="form-control" id="customer_cccd" name="customer_cccd"
+                    value="{{ $customer->customer_cccd }}">
+                @error('customer_cccd')
+                <small id="customer_cccd" class="form-text text-danger">{{ $message }}</small>
                 @enderror
             </div>
             <div class="form-group">
