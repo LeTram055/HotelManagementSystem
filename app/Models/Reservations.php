@@ -23,7 +23,6 @@ class Reservations extends Model
         'reservation_checkin',
         'reservation_checkout',
     ];
-    protected $dateFormat = 'd-m-Y';
     public $timestamps = false;
 
     public function customer()
@@ -39,5 +38,10 @@ class Reservations extends Model
     public function payments()
     {
         return $this->hasOne(Payments::class, 'reservation_id', 'reservation_id');
+    }
+
+    public function roomReservations()
+    {
+        return $this->hasMany(RoomReservation::class, 'reservation_id');
     }
 }

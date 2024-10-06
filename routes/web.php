@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\TypeImageController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\AccountController;
+use App\Http\Controllers\Admin\ReservationController;
 
 
 Route::get('/', function () {
@@ -213,3 +214,28 @@ Route::post('admin/account/update',
 Route::post('/admin/account/delete', 
 [AccountController::class, 'destroy'])
 ->name('admin.account.delete');
+
+//reservation
+Route::get('/admin/reservation', 
+[ReservationController::class, 'index'])
+    ->name('admin.reservation.index');
+
+Route::get('/admin/reservation/create', 
+[ReservationController::class, 'create'])
+    ->name('admin.reservation.create');
+
+Route::post('admin/reservation/save',
+[ReservationController::class, 'save'])
+->name('admin.reservation.save');
+
+Route::get('/admin/reservation/edit', 
+[ReservationController::class, 'edit'])
+    ->name('admin.reservation.edit');
+
+Route::post('admin/reservation/update',
+[ReservationController::class, 'update'])
+->name('admin.reservation.update');
+
+Route::post('/admin/reservation/delete', 
+[ReservationController::class, 'destroy'])
+->name('admin.reservation.delete');
