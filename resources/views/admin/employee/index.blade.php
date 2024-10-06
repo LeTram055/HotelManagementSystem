@@ -27,6 +27,7 @@ Quản lý nhân viên
                 <th class="text-center">Mã nhân viên</th>
                 <th class="text-center">Tên nhân viên</th>
                 <th class="text-center">Số điện thoại</th>
+                <th class="text-center">Email</th>
                 <th class="text-center">Địa chỉ</th>
                 <th class="text-center">Tình trạng</th>
                 <th class="text-center">Mã tài khoản</th>
@@ -39,6 +40,7 @@ Quản lý nhân viên
                 <td class="text-center">{{ $employee->employee_id }}</td>
                 <td>{{ $employee->employee_name }}</td>
                 <td>{{ $employee->employee_phone}}</td>
+                <td>{{ $employee->employee_email}}</td>
                 <td>{{ $employee->employee_address}}</td>
                 <td>{{ $employee->employee_status}}</td>
                 <td class="text-center">{{ $employee->account_id }}</td>

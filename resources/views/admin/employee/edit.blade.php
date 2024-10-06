@@ -33,6 +33,14 @@ Quản lý nhân viên
                 @enderror
             </div>
             <div class="form-group">
+                <label for="employee_email">Email:</label>
+                <input type="text" class="form-control" id="employee_email" name="employee_email"
+                    value="{{ $employee->employee_email }}">
+                @error('employee_email')
+                <small id="employee_email" class="form-text text-danger">{{ $message }}</small>
+                @enderror
+            </div>
+            <div class="form-group">
                 <label for="employee_address">Địa chỉ:</label>
                 <textarea rows="2" type="text" class="form-control" id="employee_address" name="employee_address">
                     {{ $employee->employee_address }}

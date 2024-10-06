@@ -30,6 +30,13 @@ Quản lý khách hàng
                 @enderror
             </div>
             <div class="form-group">
+                <label for="customer_email">Email:</label>
+                <input type="text" class="form-control" id="customer_email" name="customer_email" value="">
+                @error('customer_email')
+                <small id="customer_email" class="form-text text-danger">{{ $message }}</small>
+                @enderror
+            </div>
+            <div class="form-group">
                 <label for="customer_address">Địa chỉ:</label>
                 <textarea rows="2" type="text" class="form-control" id="customer_address" name="customer_address">
                 </textarea>
