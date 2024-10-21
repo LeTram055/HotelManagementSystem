@@ -116,3 +116,8 @@ body {
     height: 100px;
     object-fit: contain;
 }
+
+/*Tiêu đề bảng*/
+.table th {
+    vertical-align: top; /* Căn chỉnh tiêu đề lên trên */
+}
