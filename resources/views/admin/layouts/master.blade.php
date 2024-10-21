@@ -24,32 +24,31 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
+
     <!-- Navbar -->
     @include('admin.layouts.partials.navbar')
     <!-- End Navbar -->
 
     <!-- Sidebar -->
 
+
+
     <!-- End Sidebar -->
 
     <!-- Main content -->
-    <div class="container-fluid" id="main-content">
+    <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
-            <div class="sidebar" id="sidebar">
-                @include('admin.layouts.partials.sidebar')
-            </div>
-            <!-- End sidebar -->
+            @include('admin.layouts.partials.sidebar')
 
             <!-- Content -->
-            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+            <div class="px-4" id="main-content">
                 <div
                     class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
                     <h1 class="h2">@yield('feature-title')</h1>
                     <!--<small>@yield('feature-description')</small> -->
                 </div>
                 @yield('content')
-            </main>
+            </div>
             <!-- End content -->
         </div>
     </div>
@@ -63,15 +62,7 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
 
-    <script scr="{{ asset('js/script.js') }}"></script>
-
-    <script>
-    $(document).ready(function() {
-        $('#sidebarToggle').click(function() {
-            $('#sidebar').toggleClass('active');
-        });
-    });
-    </script>
+    <script src="{{ asset('js/admin/script.js') }}"></script>
 
     <!-- Các custom script dành riêng cho từng view -->
     @yield('custom-scripts')
