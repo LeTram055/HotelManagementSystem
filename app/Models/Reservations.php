@@ -37,7 +37,7 @@ class Reservations extends Model
 
     public function payments()
     {
-        return $this->hasOne(Payments::class, 'reservation_id', 'reservation_id');
+        return $this->hasMany(Payments::class, 'reservation_id', 'reservation_id');
     }
 
     public function roomReservations()

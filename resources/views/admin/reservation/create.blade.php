@@ -28,64 +28,33 @@ Quản lý đặt phòng
                 @enderror
             </div>
 
-            <div class="form-group" id="roomList">
+            <div class="form-group">
+                <label for="reservation_checkin">Ngày nhận phòng:</label>
+                <input type="date" class="form-control" id="reservation_checkin" name="reservation_checkin" value=""
+                    required>
+                @error('reservation_checkin')
+                <small id=" reservation_checkin" class="form-text text-danger">{{ $message }}</small>
+                @enderror
+            </div>
+            <div class="form-group">
+                <label for="reservation_checkout">Ngày trả phòng:</label>
+                <input type="date" class="form-control" id="reservation_checkout" name="reservation_checkout" value=""
+                    required>
+                @error('reservation_checkout')
+                <small id=" reservation_checkout" class="form-text text-danger">{{ $message }}</small>
+                @enderror
+            </div>
+
+            <div class="form-group">
                 <label for="room_ids">Phòng trống:</label>
                 <div id="room_ids" class="ms-3">
-                    <!-- Nhóm phòng theo loại -->
-                    @foreach($rooms->groupBy('type_id') as $typeId => $roomGroup)
-                    @if($roomGroup->isNotEmpty())
-                    <!-- Hiển thị tiêu đề loại phòng -->
-                    <p>{{ $roomGroup->first()->type->type_name }} (Giá: {{ $roomGroup->first()->type->type_price }}
-                        VNĐ)</p>
-                    <div class="d-flex flex-wrap mb-2 ms-2">
-                        @foreach($roomGroup as $room)
-                        @if($room->status_id == 1)
-                        <!-- Chỉ hiển thị phòng trống -->
-                        <div class="form-check me-3">
-                            <input class="form-check-input" type="checkbox" name="room_ids[]"
-                                value="{{ $room->room_id }}" id="room_{{ $room->room_id }}">
-                            <label class="form-check-label" for="room_{{ $room->room_id }}">
-                                {{ $room->room_name }}
-                            </label>
-                        </div>
-                        @endif
-                        @endforeach
-                    </div>
-                    @endif
-                    @endforeach
+                    <!-- Danh sách phòng sẽ được cập nhật qua AJAX -->
                 </div>
                 @error('room_ids')
                 <small id="room_ids" class="form-text text-danger">{{ $message }}</small>
                 @enderror
             </div>
 
-            <div class="form-group">
-                <label for="reservation_checkin">Ngày nhận phòng:</label>
-                <input type="date" class="form-control" id="reservation_checkin" name="reservation_checkin" value="">
-                @error('reservation_checkin')
-                <small id="reservation_checkin" class="form-text text-danger">{{ $message }}</small>
-                @enderror
-            </div>
-            <div class="form-group">
-                <label for="reservation_checkout">Ngày trả phòng:</label>
-                <input type="date" class="form-control" id="reservation_checkout" name="reservation_checkout" value="">
-                @error('reservation_checkout')
-                <small id="reservation_checkout" class="form-text text-danger">{{ $message }}</small>
-                @enderror
-            </div>
-            <div class="form-group">
-                <label for="reservation_status">Trạng thái:</label>
-                <select class="form-control" id="reservation_status" name="reservation_status">
-                    <option value="Pending">Chờ xác nhận</option>
-                    <option value="Confirmed">Đã xác nhận</option>
-                    <option value="Checked-in">Đã nhận phòng</option>
-                    <option value="Checked-out">Đã trả phòng</option>
-                    <option value="Cancelled">Đã hủy</option>
-                </select>
-                @error('reservation_status')
-                <small id="reservation_status" class="form-text text-danger">{{ $message }}</small>
-                @enderror
-            </div>
 
             <button reservation="submit" name="submit" class="btn btn-primary my-2">Lưu</button>
         </form>
@@ -94,5 +63,61 @@ Quản lý đặt phòng
 @endsection
 
 @section('custom-scripts')
+<script>
+$(document).ready(function() {
+    $('#reservation_checkin, #reservation_checkout').on('change', function() {
+        const checkinDate = $('#reservation_checkin').val();
+        const checkoutDate = $('#reservation_checkout').val();
 
+        if (checkinDate && checkoutDate) {
+            $.ajax({
+                url: "{{ route('admin.reservation.getAvailableRooms') }}", // Thay đổi URL này cho phù hợp
+                type: 'GET',
+                data: {
+                    checkin: checkinDate,
+                    checkout: checkoutDate
+                },
+                success: function(data) {
+                    $('#room_ids').empty(); // Xóa nội dung cũ
+
+                    if (data.length > 0) {
+                        const roomsByType = {};
+
+                        data.forEach(room => {
+                            const typeName = room.type
+                                .type_name; // Lấy tên loại phòng
+                            if (!roomsByType[typeName]) {
+                                roomsByType[typeName] = []; // Khởi tạo nếu chưa có
+                            }
+                            roomsByType[typeName].push(
+                                room); // Thêm phòng vào loại tương ứng
+                        });
+
+                        // Hiển thị phòng theo nhóm loại
+                        for (const type in roomsByType) {
+                            $('#room_ids').append(`<strong>${type}:</strong><br>`);
+                            roomsByType[type].forEach(room => {
+                                const roomCheckbox = `
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="room_ids[]" value="${room.room_id}" id="room_${room.room_id}">
+                                        <label class="form-check-label" for="room_${room.room_id}">
+                                            ${room.room_name} (Giá: ${room.type.type_price} VNĐ)
+                                        </label>
+                                    </div>`;
+                                $('#room_ids').append(roomCheckbox);
+                            });
+                            $('#room_ids').append('<hr>'); // Ngăn cách giữa các loại phòng
+                        }
+                    } else {
+                        $('#room_ids').html('<p>Không có phòng trống.</p>');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching available rooms:', error);
+                }
+            });
+        }
+    });
+});
+</script>
 @endsection

@@ -17,7 +17,7 @@ Quản lý đặt phòng
             <input type="hidden" name="reservation_id" value="{{ $reservation->reservation_id }}">
             <div class="form-group">
                 <label for="customer_id">Khách hàng:</label>
-                <select class="form-control" id="customer_id" name="customer_id" required>
+                <select class="form-control" id="customer_id" name="customer_id" disabled>
                     <option value="">Chọn khách hàng</option>
                     @foreach($customers as $customer)
                     <option value="{{ $customer->customer_id }}"
@@ -31,10 +31,28 @@ Quản lý đặt phòng
                 @enderror
             </div>
 
+            <div class="form-group">
+                <label for="reservation_checkin">Ngày nhận phòng:</label>
+                <input type="date" class="form-control" id="reservation_checkin" name="reservation_checkin"
+                    value="{{ $reservation->reservation_checkin }}" disabled>
+
+                @error('reservation_checkin')
+                <small id="reservation_checkin" class="form-text text-danger">{{ $message }}</small>
+                @enderror
+            </div>
+            <div class="form-group">
+                <label for="reservation_checkout">Ngày trả phòng:</label>
+                <input type="date" class="form-control" id="reservation_checkout" name="reservation_checkout"
+                    value="{{ $reservation->reservation_checkout }}" disabled>
+                @error('reservation_checkout')
+                <small id="reservation_checkout" class="form-text text-danger">{{ $message }}</small>
+                @enderror
+            </div>
+
             <div class="form-group" id="roomList">
-                <label for="room_ids">Phòng trống:</label>
+                <label for="room_ids">Thông tin phòng đã đặt:</label>
                 <div id="room_ids" class="ms-3">
-                    @foreach($rooms->groupBy('type_id') as $typeId => $roomGroup)
+                    @foreach($reservation->rooms->groupBy('type_id') as $typeId => $roomGroup)
                     @if($roomGroup->isNotEmpty())
                     <p>{{ $roomGroup->first()->type->type_name }} (Giá: {{ $roomGroup->first()->type->type_price }} VNĐ)
                     </p>
@@ -43,10 +61,14 @@ Quản lý đặt phòng
                         <div class="form-check me-3">
                             <input class="form-check-input" type="checkbox" name="room_ids[]"
                                 value="{{ $room->room_id }}" id="room_{{ $room->room_id }}"
-                                {{ in_array($room->room_id, $reservation->rooms->pluck('room_id')->toArray()) ? 'checked' : '' }}>
+                                {{ in_array($room->room_id, $reservation->rooms->pluck('room_id')->toArray()) ? 'checked' : '' }}
+                                disabled>
                             <label class="form-check-label" for="room_{{ $room->room_id }}">
-                                {{ $room->room_name }}
+                                {{ $room->room_name }} (Giá: {{ $room->type->type_price }} VNĐ)
                             </label>
+                            @if(in_array($room->room_id, $reservation->rooms->pluck('room_id')->toArray()))
+                            <input type="hidden" name="room_ids[]" value="{{ $room->room_id }}">
+                            @endif
                         </div>
                         @endforeach
                     </div>
@@ -59,25 +81,9 @@ Quản lý đặt phòng
             </div>
 
             <div class="form-group">
-                <label for="reservation_checkin">Ngày nhận phòng:</label>
-                <input type="date" class="form-control" id="reservation_checkin" name="reservation_checkin"
-                    value="{{ $reservation->reservation_checkin }}">
-                @error('reservation_checkin')
-                <small id="reservation_checkin" class="form-text text-danger">{{ $message }}</small>
-                @enderror
-            </div>
-            <div class="form-group">
-                <label for="reservation_checkout">Ngày trả phòng:</label>
-                <input type="date" class="form-control" id="reservation_checkout" name="reservation_checkout"
-                    value="{{ $reservation->reservation_checkout }}">
-                @error('reservation_checkout')
-                <small id="reservation_checkout" class="form-text text-danger">{{ $message }}</small>
-                @enderror
-            </div>
-            <div class="form-group">
                 <label for="reservation_status">Trạng thái:</label>
                 <select class="form-control" id="reservation_status" name="reservation_status">
-                    <option value="Pending" {{ $reservation->reservation_status == 'Chờ xác nhận' ? 'selected' : '' }}>
+                    <option value="Pending" {{ $reservation->reservation_status == 'Đã xác nhận' ? 'selected' : '' }}>
                         Chờ xác nhận</option>
                     <option value="Confirmed" {{ $reservation->reservation_status == 'Đã xác nhận' ? 'selected' : '' }}>
                         Đã xác nhận</option>
@@ -94,7 +100,7 @@ Quản lý đặt phòng
                 @enderror
             </div>
 
-            <button reservation="submit" name="submit" class="btn btn-primary my-2">Lưu</button>
+            <button type="submit" name="submit" class="btn btn-primary my-2">Lưu</button>
         </form>
     </div>
 </div>
