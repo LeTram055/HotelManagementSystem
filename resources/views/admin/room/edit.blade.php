@@ -35,19 +35,18 @@ Quản lý trạng thái phòng
                     @endforeach
                 </select>
             </div>
+
+            @if ($room->status_id == 1 or $room->status_id == 4)
+            <!-- Nếu trạng thái là "Trống" -->
             <div class="form-group">
                 <label for="status_name">Trạng thái phòng:</label>
-                <select class="form-control" id="status_id" name="status_id">
-                    @foreach ($roomStatuses as $roomStatus)
-                    @if($roomStatus->status_id == $room->status_id)
-                    <option value="{{ $roomStatus->status_id }}" selected>{{ $roomStatus->status_name }}
-                    </option>
-                    @else
-                    <option value="{{ $roomStatus->status_id }}">{{ $roomStatus->status_name }}</option>
-                    @endif
-                    @endforeach
+                <select class="form-control" id="status_id" name="status_id" required>
+                    <option value="1" {{ $room->status_id == 1 ? 'selected' : '' }}>Trống</option>
+                    <option value="4" {{ $room->status_id == 4 ? 'selected' : '' }}>Đang sửa</option>
                 </select>
             </div>
+            @endif
+
             <div class="form-group">
                 <label for="room_note">Ghi chú:</label>
                 <input room="text" class="form-control" id="room_note" name="room_note" value="{{ $room->room_note }}">
