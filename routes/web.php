@@ -10,6 +10,8 @@ use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\ReservationController;
+use App\Http\Controllers\Admin\PaymentController;
+
 
 
 Route::get('/', function () {
@@ -224,6 +226,10 @@ Route::get('/admin/reservation/create',
 [ReservationController::class, 'create'])
     ->name('admin.reservation.create');
 
+Route::get('/admin/reservation/getAvailableRooms',
+[ReservationController::class, 'getAvailableRooms'])
+->name('admin.reservation.getAvailableRooms');
+
 Route::post('admin/reservation/save',
 [ReservationController::class, 'save'])
 ->name('admin.reservation.save');
@@ -239,3 +245,28 @@ Route::post('admin/reservation/update',
 Route::post('/admin/reservation/delete', 
 [ReservationController::class, 'destroy'])
 ->name('admin.reservation.delete');
+
+//payment
+Route::get('/admin/payment', 
+[PaymentController::class, 'index'])
+    ->name('admin.payment.index');
+
+Route::get('/admin/payment/create', 
+[PaymentController::class, 'create'])
+    ->name('admin.payment.create');
+
+Route::post('admin/payment/save',
+[PaymentController::class, 'save'])
+->name('admin.payment.save');
+
+Route::get('/admin/payment/edit', 
+[PaymentController::class, 'edit'])
+    ->name('admin.payment.edit');
+
+Route::post('admin/payment/update',
+[PaymentController::class, 'update'])
+->name('admin.payment.update');
+
+Route::post('/admin/payment/delete', 
+[PaymentController::class, 'destroy'])
+->name('admin.payment.delete');
