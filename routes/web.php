@@ -11,7 +11,8 @@ use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\ReservationController;
 use App\Http\Controllers\Admin\PaymentController;
-
+use App\Exports\CustomersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 Route::get('/', function () {
@@ -166,6 +167,10 @@ Route::post('admin/customer/update',
 Route::post('/admin/customer/delete', 
 [CustomerController::class, 'destroy'])
 ->name('admin.customer.delete');
+
+Route::get('admin/customer/export', 
+[CustomerController::class, 'exportExcel'])
+->name('admin.customer.export');
 
 //employee
 Route::get('/admin/employee', 

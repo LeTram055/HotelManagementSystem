@@ -7,12 +7,34 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use App\Models\Customers;
 
+use App\Exports\CustomersExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class CustomerController extends Controller
-{
-    public function index() {
-        $customers = Customers::all();
+{   
+    
+    public function index(Request $request)
+    {
+        $sortField = $request->input('sort_field', 'customer_id'); // Mặc định sắp xếp theo customer_id
+        $sortDirection = $request->input('sort_direction', 'asc'); // Mặc định sắp xếp tăng dần
+
+        $query = Customers::query();
+        // Kiểm tra nếu có input tìm kiếm
+        if ($request->filled('search')) {
+            $searchTerm = $request->input('search');
+            // Tìm kiếm theo tên, CCCD, email, địa chỉ
+            $query->where('customer_name', 'like', '%' . $searchTerm . '%')
+                ->orWhere('customer_cccd', 'like', '%' . $searchTerm . '%')
+                ->orWhere('customer_email', 'like', '%' . $searchTerm . '%')
+                ->orWhere('customer_address', 'like', '%' . $searchTerm . '%');
+        }
+
+
+        $customers = $customers = $query->orderBy($sortField, $sortDirection)->get();
         return view('admin.customer.index')
-        ->with('customers', $customers);
+        ->with('customers', $customers)
+        ->with('sortField', $sortField)
+        ->with('sortDirection', $sortDirection);
     }
     
     public function create()
@@ -69,5 +91,10 @@ class CustomerController extends Controller
         Session::flash('alert-info', 'Xóa thành công ^^~!!!');
         return redirect()->route('admin.customer.index');
     }
+
+    public function exportExcel()
+{
+    return Excel::download(new CustomersExport, 'customers.xlsx');
+}
 
 }

@@ -12,29 +12,86 @@ Quản lý khách hàng
 <div class="flash-message">
     @foreach (['danger', 'warning', 'success', 'info'] as $msg)
     @if(Session::has('alert-' . $msg))
-    <p class="alert alert-{{ $msg }}">{{ Session::get('alert-' . $msg) }} <a href="#" class="close" data-dismiss="alert"
-            aria-label="close">&times;</a></p>
+    <p class="alert alert-{{ $msg }}">{{ Session::get('alert-' . $msg) }} <button type="button" class="btn-close"
+            data-bs-dismiss="alert" aria-label="Close"></p>
     @endif
     @endforeach
 </div>
 
-<a href="{{ route('admin.customer.create') }}" class="btn btn-primary mb-3">Thêm mới</a>
+<form method="GET" action="{{ route('admin.customer.index') }}" class="row mb-3 justify-content-center">
+    <div class="col-md-6">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control rounded" placeholder="Tìm kiếm khách hàng..."
+                value="{{ request('search') }}">
+            <button class="btn btn-bg rounded ms-2" type="submit">Tìm kiếm</button>
+        </div>
+    </div>
+</form>
+
+
+
+<div class="d-flex justify-content-between mb-3">
+    <a href="{{ route('admin.customer.create') }}" class="btn btn-primary">Thêm mới</a>
+    <a href="{{ route('admin.customer.export') }}" class="btn btn-success">Xuất Excel</a>
+</div>
 
 <div class="table-responsive ">
     <table class="table table-striped table-sm">
         <thead>
             <tr>
-                <th class="text-center">Mã khách hàng</th>
-                <th class="text-center">Tên khách hàng</th>
-                <th class="text-center">Căn cước công dân</th>
-                <th class="text-center">Email</th>
-                <th class="text-center">Địa chỉ</th>
-                <th class="text-center">Mã tài khoản</th>
+                <th class="text-center"><a
+                        href="{{ route('admin.customer.index', ['sort_field' => 'customer_id', 'sort_direction' => $sortField == 'customer_id' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Mã khách hàng
+                        @if($sortField == 'customer_id')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a>
+                </th>
+                <th class="text-center"><a
+                        href="{{ route('admin.customer.index', ['sort_field' => 'customer_name', 'sort_direction' => $sortField == 'customer_name' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Tên khách hàng
+                        @if($sortField == 'customer_name')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a>
+                </th>
+                <th class="text-center"><a
+                        href="{{ route('admin.customer.index', ['sort_field' => 'customer_cccd', 'sort_direction' => $sortField == 'customer_cccd' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Căn cước công dân
+                        @if($sortField == 'customer_cccd')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a>
+                </th>
+                <th class="text-center"><a
+                        href="{{ route('admin.customer.index', ['sort_field' => 'customer_email', 'sort_direction' => $sortField == 'customer_email' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Email
+                        @if($sortField == 'customer_email')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a>
+                </th>
+                <th class="text-center"><a
+                        href="{{ route('admin.customer.index', ['sort_field' => 'customer_address', 'sort_direction' => $sortField == 'customer_address' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Địa chỉ
+                        @if($sortField == 'customer_address')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a>
+                </th>
+                <th class="text-center"><a
+                        href="{{ route('admin.customer.index', ['sort_field' => 'account_id', 'sort_direction' => $sortField == 'account_id' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Mã tài khoản
+                        @if($sortField == 'account_id')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a>
+                </th>
                 <th class="text-center">Hành động</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($customers as $customer)
+            @forelse ($customers as $customer)
             <tr>
                 <td class="text-center">{{ $customer->customer_id }}</td>
                 <td>{{ $customer->customer_name }}</td>
@@ -56,7 +113,12 @@ Quản lý khách hàng
 
                 </td>
             </tr>
-            @endforeach
+            @empty
+            <tr>
+                <td colspan="7" class="text-center">Không tìm thấy khách hàng</td>
+            </tr>
+            @endforelse
+
         </tbody>
     </table>
 </div>
