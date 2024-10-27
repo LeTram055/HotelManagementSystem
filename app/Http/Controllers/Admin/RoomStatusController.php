@@ -7,13 +7,32 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use App\Models\RoomStatuses;
 
+use App\Exports\RoomStatusesExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class RoomStatusController extends Controller
 {
-    public function index()
+
+    public function index(Request $request)
     {
-        $roomStatuses = RoomStatuses::all();
-        return view('admin/roomstatus/index')
-            ->with('roomStatuses', $roomStatuses);
+        $sortField = $request->input('sort_field', 'status_id'); // Mặc định sắp xếp theo status_id
+        $sortDirection = $request->input('sort_direction', 'asc'); // Mặc định sắp xếp tăng dần
+
+        $query = RoomStatuses::query();
+        // Kiểm tra nếu có input tìm kiếm
+        if ($request->filled('search')) {
+            $searchTerm = $request->input('search');
+            // Tìm kiếm theo tên, CCCD, email, địa chỉ
+            $query->where('status_name', 'like', '%' . $searchTerm . '%')
+                ->orWhere('status_id', 'like', '%' . $searchTerm . '%');
+        }
+
+
+        $roomStatuses = $query->orderBy($sortField, $sortDirection)->get();
+        return view('admin.roomstatus.index')
+        ->with('roomStatuses', $roomStatuses)
+        ->with('sortField', $sortField)
+        ->with('sortDirection', $sortDirection);
     }
 
     public function create()
@@ -56,5 +75,10 @@ class RoomStatusController extends Controller
         $roomStatus->destroy($request->status_id);
         Session::flash('alert-info', 'Xóa thành công ^^~!!!');
         return redirect()->route('admin.roomstatus.index');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new RoomStatusesExport, 'roomStatuses.xlsx');
     }
 }

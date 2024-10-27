@@ -43,6 +43,10 @@ Route::post('/admin/roomstatus/delete',
 [RoomStatusController::class, 'destroy'])
 ->name('admin.roomstatus.delete');
 
+Route::get('admin/roomstatus/export', 
+[RoomStatusController::class, 'exportExcel'])
+->name('admin.roomstatus.export');
+
 //facility
 Route::get('/admin/facility', 
 [FacilityController::class, 'index'])
