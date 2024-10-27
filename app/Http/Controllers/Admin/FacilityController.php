@@ -6,14 +6,32 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use App\Models\Facilities;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\FacilitiesExport;
 
 class FacilityController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $facilities = Facilities::all();
-        return view('admin/facility/index')
-            ->with('facilities', $facilities);
+        $sortField = $request->input('sort_field', 'facility_id'); // Mặc định sắp xếp theo facility_id
+        $sortDirection = $request->input('sort_direction', 'asc'); // Mặc định sắp xếp tăng dần
+
+        $query = Facilities::query();
+        // Kiểm tra nếu có input tìm kiếm
+        if ($request->filled('search')) {
+            $searchTerm = $request->input('search');
+            // Tìm kiếm theo tên, CCCD, email, địa chỉ
+            $query->where('facility_name', 'like', '%' . $searchTerm . '%')
+                ->orWhere('facility_id', 'like', '%' . $searchTerm . '%')
+                ->orWhere('facility_description', 'like', '%' . $searchTerm . '%');
+        }
+
+
+        $facilities = $query->orderBy($sortField, $sortDirection)->get();
+        return view('admin.facility.index')
+        ->with('facilities', $facilities)
+        ->with('sortField', $sortField)
+        ->with('sortDirection', $sortDirection);
     }
 
     public function create()
@@ -58,5 +76,10 @@ class FacilityController extends Controller
         $facility->destroy($request->facility_id);
         Session::flash('alert-info', 'Xóa thành công ^^~!!!');
         return redirect()->route('admin.facility.index');
+    }
+
+    public function exportExcel() 
+    {
+        return Excel::download(new FacilitiesExport, 'facilities.xlsx');
     }
 }

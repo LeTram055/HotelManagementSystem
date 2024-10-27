@@ -72,6 +72,10 @@ Route::post('/admin/facility/delete',
 [FacilityController::class, 'destroy'])
 ->name('admin.facility.delete');
 
+Route::get('admin/facility/export', 
+[FacilityController::class, 'exportExcel'])
+->name('admin.facility.export');
+
 //type
 Route::get('/admin/type', 
 [TypeController::class, 'index'])

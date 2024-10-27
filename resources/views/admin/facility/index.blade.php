@@ -12,21 +12,55 @@ Quản lý thiết bị
 <div class="flash-message">
     @foreach (['danger', 'warning', 'success', 'info'] as $msg)
     @if(Session::has('alert-' . $msg))
-    <p class="alert alert-{{ $msg }}">{{ Session::get('alert-' . $msg) }} <a href="#" class="close" data-dismiss="alert"
-            aria-label="close">&times;</a></p>
+    <p class="alert alert-{{ $msg }}">{{ Session::get('alert-' . $msg) }} <button type="button" class="btn-close"
+            data-bs-dismiss="alert" aria-label="Close"></p>
     @endif
     @endforeach
 </div>
 
-<a href="{{ route('admin.facility.create') }}" class="btn btn-primary mb-3">Thêm mới</a>
+<form method="GET" action="{{ route('admin.facility.index') }}" class="row mb-3 justify-content-center">
+    <div class="col-md-6">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control rounded" placeholder="Tìm kiếm tiện nghi..."
+                value="{{ request('search') }}">
+            <button class="btn btn-bg rounded ms-2" type="submit">Tìm kiếm</button>
+        </div>
+    </div>
+</form>
+
+<div class="d-flex justify-content-between mb-3">
+    <a href="{{ route('admin.facility.create') }}" class="btn btn-primary">Thêm mới</a>
+    <a href="{{ route('admin.facility.export') }}" class="btn btn-success">Xuất Excel</a>
+</div>
 
 <div class="table-responsive ">
     <table class="table table-striped table-sm">
         <thead>
             <tr>
-                <th class="text-center">Mã thiết bị</th>
-                <th class="text-center">Tên thiết bị</th>
-                <th class="text-center">Mô tả thiết bị</th>
+                <th class="text-center"><a
+                        href="{{ route('admin.facility.index', ['sort_field' => 'facility_id', 'sort_direction' => $sortField == 'facility_id' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Mã tiện nghi
+                        @if($sortField == 'facility_id')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a>
+                </th>
+                <th class="text-center"><a
+                        href="{{ route('admin.facility.index', ['sort_field' => 'facility_name', 'sort_direction' => $sortField == 'facility_name' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Tên tiện nghi
+                        @if($sortField == 'facility_name')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a>
+                </th>
+                <th class="text-center"><a
+                        href="{{ route('admin.facility.index', ['sort_field' => 'facility_description', 'sort_direction' => $sortField == 'facility_description' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Mô tả tiện nghi
+                        @if($sortField == 'facility_description')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a>
+                </th>
                 <th class="text-center">Hành động</th>
             </tr>
         </thead>
