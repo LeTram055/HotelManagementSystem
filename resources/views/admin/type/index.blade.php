@@ -21,7 +21,7 @@ Quản lý loại phòng
 <form method="GET" action="{{ route('admin.type.index') }}" class="row mb-3 justify-content-center">
     <div class="col-md-6">
         <div class="input-group">
-            <input type="text" name="search" class="form-control rounded" placeholder="Tìm kiếm nhân viên..."
+            <input type="text" name="search" class="form-control rounded" placeholder="Tìm kiếm loại phòng..."
                 value="{{ request('search') }}">
             <button class="btn btn-bg rounded ms-2" type="submit">Tìm kiếm</button>
         </div>
