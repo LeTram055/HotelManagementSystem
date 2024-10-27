@@ -53,14 +53,11 @@ class ReservationController extends Controller
                         });
                     });
             })
+            ->where('status_id', '!=', 4)
             ->get();
 
         return response()->json($availableRooms);
     }
-
-
-
-
 
     public function save(Request $request)
     {
