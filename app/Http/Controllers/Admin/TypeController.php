@@ -8,13 +8,31 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use App\Models\Types;
 
+use App\Exports\TypesExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class TypeController extends Controller
 {
-    public function index()
-    {
-        $types = Types::all();
-        return view('admin/type/index')
-            ->with('types', $types);
+    public function index(Request $request) {
+        $sortField = $request->input('sort_field', 'type_id'); // Mặc định sắp xếp theo type_id
+        $sortDirection = $request->input('sort_direction', 'asc'); // Mặc định sắp xếp tăng dần
+
+        $query = Types::query();
+        // Kiểm tra nếu có input tìm kiếm
+        if ($request->filled('search')) {
+            $searchTerm = $request->input('search');
+            
+            $query->where('type_id', 'like', '%' . $searchTerm . '%')
+                ->orwhere('type_name', 'like', '%' . $searchTerm . '%')
+                ->orWhere('type_price', 'like', '%' . $searchTerm . '%')
+                ->orWhere('type_capacity', 'like', '%' . $searchTerm . '%')
+                ->orWhere('type_area', 'like', '%' . $searchTerm . '%');
+        }
+        $types = $query->orderBy($sortField, $sortDirection)->get();
+        return view('admin.type.index')
+        ->with('types', $types)
+        ->with('sortField', $sortField)
+        ->with('sortDirection', $sortDirection);
     }
 
     public function create()
@@ -88,5 +106,10 @@ class TypeController extends Controller
         $type->destroy($request->type_id);
         Session::flash('alert-info', 'Xóa thành công ^^~!!!');
         return redirect()->route('admin.type.index');
+    }
+
+    public function exportExcel() 
+    {
+        return Excel::download(new TypesExport, 'types.xlsx');
     }
 }

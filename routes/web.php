@@ -101,6 +101,11 @@ Route::post('/admin/type/delete',
 [TypeController::class, 'destroy'])
 ->name('admin.type.delete');
 
+Route::get('admin/type/export', 
+[TypeController::class, 'exportExcel'])
+->name('admin.type.export');
+
+
 //room
 Route::get('/admin/room', 
 [RoomController::class, 'index'])
