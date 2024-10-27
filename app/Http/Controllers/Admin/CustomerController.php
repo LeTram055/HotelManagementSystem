@@ -30,7 +30,7 @@ class CustomerController extends Controller
         }
 
 
-        $customers = $customers = $query->orderBy($sortField, $sortDirection)->get();
+        $customers = $query->orderBy($sortField, $sortDirection)->get();
         return view('admin.customer.index')
         ->with('customers', $customers)
         ->with('sortField', $sortField)

@@ -25,7 +25,7 @@ class EmployeeController extends Controller
                 ->orWhere('employee_email', 'like', '%' . $searchTerm . '%')
                 ->orWhere('employee_address', 'like', '%' . $searchTerm . '%');
         }
-        $employees = $employees = $query->orderBy($sortField, $sortDirection)->get();
+        $employees = $query->orderBy($sortField, $sortDirection)->get();
         return view('admin.employee.index')
         ->with('employees', $employees)
         ->with('sortField', $sortField)
