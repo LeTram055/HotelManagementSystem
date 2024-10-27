@@ -3,7 +3,11 @@
         <button class="navbar-toggler d-md-none" type="button" id="sidebarToggle">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Ánh Dương Hotel</a>
+        <a class="navbar-brand" href="">
+            <img src="{{ asset('images/logo_nbg.png') }}" alt="Ánh Dương Hotel" style="height: 40px;">
+            Ánh Dương Hotel
+        </a>
+
     </div>
 
     <!-- <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Ánh Dương Hotel</a> -->

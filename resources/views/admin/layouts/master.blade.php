@@ -14,10 +14,13 @@
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    <link rel="icon" href="{{ asset('images/logo.png') }}" type="image/x-icon">
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/admin/style.css') }}">
 
-    <title>Ánh Dương Hotel | @yield('title')</title>
+    <title>Ánh Dương Hotel |
+        @yield('title')</title>
 
     <!-- Các custom style dành riêng cho từng view -->
     <!-- @yield('custom-css') -->
