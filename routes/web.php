@@ -197,6 +197,11 @@ Route::post('/admin/employee/delete',
 [EmployeeController::class, 'destroy'])
 ->name('admin.employee.delete');
 
+Route::get('admin/employee/export', 
+[EmployeeController::class, 'exportExcel'])
+->name('admin.employee.export');
+
+
 //account
 Route::get('/admin/account', 
 [AccountController::class, 'index'])

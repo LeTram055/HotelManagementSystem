@@ -12,25 +12,83 @@ Quản lý nhân viên
 <div class="flash-message">
     @foreach (['danger', 'warning', 'success', 'info'] as $msg)
     @if(Session::has('alert-' . $msg))
-    <p class="alert alert-{{ $msg }}">{{ Session::get('alert-' . $msg) }} <a href="#" class="close" data-dismiss="alert"
-            aria-label="close">&times;</a></p>
+    <p class="alert alert-{{ $msg }}">{{ Session::get('alert-' . $msg) }} <button type="button" class="btn-close"
+            data-bs-dismiss="alert" aria-label="Close"></p>
     @endif
     @endforeach
 </div>
 
-<a href="{{ route('admin.employee.create') }}" class="btn btn-primary mb-3">Thêm mới</a>
+<form method="GET" action="{{ route('admin.employee.index') }}" class="row mb-3 justify-content-center">
+    <div class="col-md-6">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control rounded" placeholder="Tìm kiếm khách hàng..."
+                value="{{ request('search') }}">
+            <button class="btn btn-bg rounded ms-2" type="submit">Tìm kiếm</button>
+        </div>
+    </div>
+</form>
+
+<div class="d-flex justify-content-between mb-3">
+    <a href="{{ route('admin.employee.create') }}" class="btn btn-primary">Thêm mới</a>
+    <a href="{{ route('admin.employee.export') }}" class="btn btn-success">Xuất Excel</a>
+</div>
 
 <div class="table-responsive ">
     <table class="table table-striped table-sm">
         <thead>
             <tr>
-                <th class="text-center">Mã nhân viên</th>
-                <th class="text-center">Tên nhân viên</th>
-                <th class="text-center">Số điện thoại</th>
-                <th class="text-center">Email</th>
-                <th class="text-center">Địa chỉ</th>
-                <th class="text-center">Tình trạng</th>
-                <th class="text-center">Mã tài khoản</th>
+                <th class="text-center"><a
+                        href="{{ route('admin.employee.index', ['sort_field' => 'employee_id', 'sort_direction' => $sortField == 'employee_id' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Mã nhân viên
+                        @if($sortField == 'employee_id')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a>
+                </th>
+                <th class="text-center"><a
+                        href="{{ route('admin.employee.index', ['sort_field' => 'employee_name', 'sort_direction' => $sortField == 'employee_name' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Tên nhân viên
+                        @if($sortField == 'employee_name')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a>
+                </th>
+                <th class="text-center"><a
+                        href="{{ route('admin.employee.index', ['sort_field' => 'employee_phone', 'sort_direction' => $sortField == 'employee_phone' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Số điện thoại
+                        @if($sortField == 'employee_phone')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a></th>
+                <th class="text-center"><a
+                        href="{{ route('admin.employee.index', ['sort_field' => 'employee_email', 'sort_direction' => $sortField == 'employee_email' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Email
+                        @if($sortField == 'employee_email')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a>
+                </th>
+                <th class="text-center"><a
+                        href="{{ route('admin.employee.index', ['sort_field' => 'employee_address', 'sort_direction' => $sortField == 'employee_address' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Địa chỉ
+                        @if($sortField == 'employee_address')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a></th>
+                <th class="text-center"><a
+                        href="{{ route('admin.employee.index', ['sort_field' => 'employee_status', 'sort_direction' => $sortField == 'employee_status' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Tình trạng
+                        @if($sortField == 'employee_status')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a></th>
+                <th class="text-center"><a
+                        href="{{ route('admin.employee.index', ['sort_field' => 'account_id', 'sort_direction' => $sortField == 'account_id' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Mã tài khoản
+                        @if($sortField == 'account_id')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a></th>
                 <th class="text-center">Hành động</th>
             </tr>
         </thead>
