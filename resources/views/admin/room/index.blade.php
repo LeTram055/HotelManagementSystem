@@ -18,16 +18,58 @@ Quản lý phòng
     @endforeach
 </div>
 
-<a href="{{ route('admin.room.create') }}" class="btn btn-primary mb-3">Thêm mới</a>
+<form method="GET" action="{{ route('admin.room.index') }}" class="row mb-3 justify-content-center">
+    <div class="col-md-6">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control rounded" placeholder="Tìm kiếm phòng..."
+                value="{{ request('search') }}">
+            <button class="btn btn-bg rounded ms-2" type="submit">Tìm kiếm</button>
+        </div>
+    </div>
+</form>
+
+<div class="d-flex justify-content-between mb-3">
+    <a href="{{ route('admin.room.create') }}" class="btn btn-primary">Thêm mới</a>
+    <a href="{{ route('admin.room.export') }}" class="btn btn-success">Xuất Excel</a>
+</div>
+
 
 <div class="table-responsive ">
     <table class="table table-striped table-sm">
         <thead>
             <tr>
-                <th class="text-center">Mã phòng</th>
-                <th class="text-center">Tên phòng</th>
-                <th class="text-center">Loại phòng</th>
-                <th class="text-center">Tình trạng phòng</th>
+                <th class="text-center"><a
+                        href="{{ route('admin.room.index', ['sort_field' => 'room_id', 'sort_direction' => $sortField == 'room_id' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Mã phòng
+                        @if($sortField == 'room_id')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a>
+                </th>
+                <th class="text-center"><a
+                        href="{{ route('admin.room.index', ['sort_field' => 'room_name', 'sort_direction' => $sortField == 'room_name' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Tên phòng
+                        @if($sortField == 'room_name')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a>
+                </th>
+                <th class="text-center"><a
+                        href="{{ route('admin.room.index', ['sort_field' => 'type_id', 'sort_direction' => $sortField == 'type_id' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Loại phòng
+                        @if($sortField == 'type_id')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a>
+                </th>
+                <th class="text-center"><a
+                        href="{{ route('admin.room.index', ['sort_field' => 'status_id', 'sort_direction' => $sortField == 'status_id' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Tình trạng phòng
+                        @if($sortField == 'status_id')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a>
+                </th>
                 <th class="text-center">Ghi chú</th>
                 <th class="text-center">Hành động</th>
             </tr>

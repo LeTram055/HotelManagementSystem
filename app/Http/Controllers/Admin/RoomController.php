@@ -9,14 +9,36 @@ use App\Models\Rooms;
 use App\Models\Types;
 use App\Models\RoomStatuses;
 
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\RoomsExport;
+
 
 class RoomController extends Controller
 {
-    public function index()
-    {
-        $rooms = Rooms::all();
-        return view('admin/room/index')
-            ->with('rooms', $rooms);
+    public function index(Request $request) {
+        $sortField = $request->input('sort_field', 'room_id'); // Mặc định sắp xếp theo room_id
+        $sortDirection = $request->input('sort_direction', 'asc'); // Mặc định sắp xếp tăng dần
+
+        $query = Rooms::query();
+        // Kiểm tra nếu có input tìm kiếm
+        if ($request->filled('search')) {
+            $searchTerm = $request->input('search');
+            
+            $query->where('room_id', 'like', '%' . $searchTerm . '%')
+                ->orwhere('room_name', 'like', '%' . $searchTerm . '%')
+                ->orWhereHas('type', function($q) use ($searchTerm) {
+                $q->where('type_name', 'like', '%' . $searchTerm . '%');
+                })
+                ->orWhereHas('status', function($q) use ($searchTerm) {
+                    $q->where('status_name', 'like', '%' . $searchTerm . '%');
+                })
+                ->orWhere('room_note', 'like', '%' . $searchTerm . '%');
+        }
+        $rooms = $query->orderBy($sortField, $sortDirection)->get();
+        return view('admin.room.index')
+        ->with('rooms', $rooms)
+        ->with('sortField', $sortField)
+        ->with('sortDirection', $sortDirection);
     }
 
     public function create()
@@ -73,5 +95,10 @@ class RoomController extends Controller
         $room->destroy($request->room_id);
         Session::flash('alert-info', 'Xóa thành công ^^~!!!');
         return redirect()->route('admin.room.index');
+    }
+
+    public function exportExcel() 
+    {
+        return Excel::download(new RoomsExport, 'rooms.xlsx');
     }
 }

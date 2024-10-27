@@ -130,6 +130,9 @@ Route::post('admin/room/update',
 Route::post('/admin/room/delete', 
 [RoomController::class, 'destroy'])
 ->name('admin.room.delete');
+Route::get('admin/room/export', 
+[RoomController::class, 'exportExcel'])
+->name('admin.room.export');
 
 //TypeImages
 Route::get('/admin/typeimage', 
