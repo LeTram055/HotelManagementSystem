@@ -58,6 +58,7 @@ class EmployeeController extends Controller
         $employee = new Employees();
         $employee->employee_name = $request->employee_name;
         $employee->employee_phone= $request->employee_phone;
+        $employee->employee_email= $request->employee_email;
         $employee->employee_address= $request->employee_address;
         $employee->employee_status = $request->employee_status;
         $employee->save();

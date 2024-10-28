@@ -38,8 +38,8 @@ Quản lý nhân viên
             </div>
             <div class="form-group">
                 <label for="employee_address">Địa chỉ:</label>
-                <textarea rows="2" type="text" class="form-control" id="employee_address" name="employee_address">
-                </textarea>
+                <textarea rows="2" type="text" class="form-control" id="employee_address"
+                    name="employee_address"></textarea>
                 @error('employee_address')
                 <small id="employee_address" class="form-text text-danger">{{ $message }}</small>
                 @enderror
