@@ -28,7 +28,18 @@ class TypeController extends Controller
                 ->orWhere('type_capacity', 'like', '%' . $searchTerm . '%')
                 ->orWhere('type_area', 'like', '%' . $searchTerm . '%');
         }
-        $types = $query->orderBy($sortField, $sortDirection)->get();
+
+        if ($sortField == 'type_name') {
+            $query->orderByRaw("CONVERT($sortField USING utf8) COLLATE utf8_unicode_ci $sortDirection");
+        } elseif (in_array($sortField, ['type_id', 'type_price','type_capacity','type_area'])) {
+            // Sắp xếp giá theo kiểu số
+            $query->orderByRaw("CAST($sortField AS DECIMAL) $sortDirection");
+        } 
+        else {
+            $query->orderByRaw("CONVERT(type_id USING utf8) COLLATE utf8_unicode_ci asc");
+        }
+
+        $types = $query->get();
         return view('admin.type.index')
         ->with('types', $types)
         ->with('sortField', $sortField)

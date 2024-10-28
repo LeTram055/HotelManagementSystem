@@ -46,9 +46,9 @@ Quản lý hình ảnh loại phòng
                     </a>
                 </th>
                 <th class="text-center"><a
-                        href="{{ route('admin.typeimage.index', ['sort_field' => 'type_id', 'sort_direction' => $sortField == 'type_id' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        href="{{ route('admin.typeimage.index', ['sort_field' => 'type_name', 'sort_direction' => $sortField == 'type_name' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
                         Loại phòng
-                        @if($sortField == 'type_id')
+                        @if($sortField == 'type_name')
                         <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
                         @endif
                     </a>

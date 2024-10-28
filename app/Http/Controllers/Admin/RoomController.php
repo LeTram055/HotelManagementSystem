@@ -19,22 +19,35 @@ class RoomController extends Controller
         $sortField = $request->input('sort_field', 'room_id'); // Mặc định sắp xếp theo room_id
         $sortDirection = $request->input('sort_direction', 'asc'); // Mặc định sắp xếp tăng dần
 
-        $query = Rooms::query();
-        // Kiểm tra nếu có input tìm kiếm
+        //$query = Rooms::query();
+
+        $query = Rooms::join('types', 'rooms.type_id', '=', 'types.type_id')
+            ->join('room_statuses', 'rooms.status_id', '=', 'room_statuses.status_id')
+            ->select('rooms.*', 'types.type_name', 'room_statuses.status_name');
+
         if ($request->filled('search')) {
             $searchTerm = $request->input('search');
             
             $query->where('room_id', 'like', '%' . $searchTerm . '%')
-                ->orwhere('room_name', 'like', '%' . $searchTerm . '%')
-                ->orWhereHas('type', function($q) use ($searchTerm) {
-                $q->where('type_name', 'like', '%' . $searchTerm . '%');
-                })
-                ->orWhereHas('status', function($q) use ($searchTerm) {
-                    $q->where('status_name', 'like', '%' . $searchTerm . '%');
-                })
-                ->orWhere('room_note', 'like', '%' . $searchTerm . '%');
+                ->orWhere(function ($q) use ($searchTerm) {
+                $q->where('room_name', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('type_name', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('status_name', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('room_note', 'like', '%' . $searchTerm . '%');
+                });
         }
-        $rooms = $query->orderBy($sortField, $sortDirection)->get();
+
+        if (in_array($sortField, ['type_name', 'room_name', 'status_name'])) {
+            $query->orderByRaw("CONVERT($sortField USING utf8) COLLATE utf8_unicode_ci $sortDirection");
+        } elseif ($sortField == 'room_id') {
+            // Sắp xếp giá theo kiểu số
+            $query->orderByRaw("CAST($sortField AS DECIMAL) $sortDirection");
+        } 
+        else {
+            $query->orderByRaw("CONVERT(room_id USING utf8) COLLATE utf8_unicode_ci asc");
+        }
+
+        $rooms = $query->get();
         return view('admin.room.index')
         ->with('rooms', $rooms)
         ->with('sortField', $sortField)

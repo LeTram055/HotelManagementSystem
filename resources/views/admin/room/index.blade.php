@@ -55,17 +55,17 @@ Quản lý phòng
                     </a>
                 </th>
                 <th class="text-center"><a
-                        href="{{ route('admin.room.index', ['sort_field' => 'type_id', 'sort_direction' => $sortField == 'type_id' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        href="{{ route('admin.room.index', ['sort_field' => 'type_name', 'sort_direction' => $sortField == 'type_name' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
                         Loại phòng
-                        @if($sortField == 'type_id')
+                        @if($sortField == 'type_name')
                         <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
                         @endif
                     </a>
                 </th>
                 <th class="text-center"><a
-                        href="{{ route('admin.room.index', ['sort_field' => 'status_id', 'sort_direction' => $sortField == 'status_id' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        href="{{ route('admin.room.index', ['sort_field' => 'status_name', 'sort_direction' => $sortField == 'status_name' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
                         Tình trạng phòng
-                        @if($sortField == 'status_id')
+                        @if($sortField == 'status_name')
                         <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
                         @endif
                     </a>
@@ -80,7 +80,7 @@ Quản lý phòng
                 <td class="text-center">{{ $room->room_id }}</td>
                 <td class="text-center">{{ $room->room_name }}</td>
                 <td>{{ $room->type->type_name }}</td>
-                <td>{{ $room->status->status_name }}</td>
+                <td class="text-center">{{ $room->status->status_name }}</td>
                 <td>{{ $room->room_note }}</td>
                 <td>
                     <div class="d-flex justify-content-center">

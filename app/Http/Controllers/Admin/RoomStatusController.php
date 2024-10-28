@@ -27,8 +27,17 @@ class RoomStatusController extends Controller
                 ->orWhere('status_id', 'like', '%' . $searchTerm . '%');
         }
 
+        if ($sortField == 'status_name') {
+            $query->orderByRaw("CONVERT($sortField USING utf8) COLLATE utf8_unicode_ci $sortDirection");
+        } elseif ($sortField == 'status_id') {
+            // Sắp xếp giá theo kiểu số
+            $query->orderByRaw("CAST($sortField AS DECIMAL) $sortDirection");
+        }
+        else {
+            $query->orderByRaw("CONVERT(type_id USING utf8) COLLATE utf8_unicode_ci asc");
+        }
 
-        $roomStatuses = $query->orderBy($sortField, $sortDirection)->get();
+        $roomStatuses = $query->get();
         return view('admin.roomstatus.index')
         ->with('roomStatuses', $roomStatuses)
         ->with('sortField', $sortField)

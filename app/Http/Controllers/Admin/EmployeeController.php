@@ -20,12 +20,24 @@ class EmployeeController extends Controller
         if ($request->filled('search')) {
             $searchTerm = $request->input('search');
             
-            $query->where('employee_name', 'like', '%' . $searchTerm . '%')
+            $query->where('employee_id', 'like', '%' . $searchTerm . '%')
+                ->orWhere('employee_name', 'like', '%' . $searchTerm . '%')
                 ->orWhere('employee_phone', 'like', '%' . $searchTerm . '%')
                 ->orWhere('employee_email', 'like', '%' . $searchTerm . '%')
                 ->orWhere('employee_address', 'like', '%' . $searchTerm . '%');
         }
-        $employees = $query->orderBy($sortField, $sortDirection)->get();
+
+        if (in_array($sortField, ['employee_name', 'employee_phone','employee_email','employee_address'])) {
+           $query->orderByRaw("CONVERT($sortField USING utf8) COLLATE utf8_unicode_ci $sortDirection");
+        } elseif ($sortField == 'employee_id') {
+            // Sắp xếp giá theo kiểu số
+            $query->orderByRaw("CAST($sortField AS DECIMAL) $sortDirection");
+        } 
+        else {
+            $query->orderByRaw("CONVERT(employee_id USING utf8) COLLATE utf8_unicode_ci asc");
+        }
+
+        $employees = $query->get();
         return view('admin.employee.index')
         ->with('employees', $employees)
         ->with('sortField', $sortField)

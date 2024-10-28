@@ -18,19 +18,32 @@ class TypeImageController extends Controller
         $sortField = $request->input('sort_field', 'image_id'); // Mặc định sắp xếp theo image_id
         $sortDirection = $request->input('sort_direction', 'asc'); // Mặc định sắp xếp tăng dần
 
-        $query = TypeImages::query();
-        // Kiểm tra nếu có input tìm kiếm
+        $query = TypeImages::join('types', 'type_images.type_id', '=', 'types.type_id')
+            ->select('type_images.*', 'types.type_name');
+
+        //Kiểm tra nếu có input tìm kiếm
         if ($request->filled('search')) {
             $searchTerm = $request->input('search');
             
-            $query->where('image_id', 'like', '%' . $searchTerm . '%')
-                ->orWhereHas('type', function($q) use ($searchTerm) {
-                $q->where('type_name', 'like', '%' . $searchTerm . '%');
-                })
-                ->orWhere('image_url', 'like', '%' . $searchTerm . '%');
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('image_id', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('image_url', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('type_name', 'like', '%' . $searchTerm . '%');
+            });
                 
         }
-        $typeImages = $query->orderBy($sortField, $sortDirection)->get();
+
+        
+        if ($sortField == 'type_name') {
+            $query->orderByRaw("CONVERT($sortField USING utf8) COLLATE utf8_unicode_ci $sortDirection");
+        } elseif ($sortField == 'image_id') {
+            // Sắp xếp giá theo kiểu số
+            $query->orderByRaw("CAST($sortField AS DECIMAL) $sortDirection");
+        }  
+        else {
+            $query->orderByRaw("CONVERT(image_id USING utf8) COLLATE utf8_unicode_ci asc");
+        }
+        $typeImages = $query->get();
         return view('admin.typeimage.index')
         ->with('typeImages', $typeImages)
         ->with('sortField', $sortField)

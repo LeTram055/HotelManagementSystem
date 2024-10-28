@@ -20,14 +20,23 @@ class FacilityController extends Controller
         // Kiểm tra nếu có input tìm kiếm
         if ($request->filled('search')) {
             $searchTerm = $request->input('search');
-            // Tìm kiếm theo tên, CCCD, email, địa chỉ
+            // Tìm kiếm 
             $query->where('facility_name', 'like', '%' . $searchTerm . '%')
                 ->orWhere('facility_id', 'like', '%' . $searchTerm . '%')
                 ->orWhere('facility_description', 'like', '%' . $searchTerm . '%');
         }
 
+        if (in_array($sortField, ['facility_name', 'facility_description'])) {
+            $query->orderByRaw("CONVERT($sortField USING utf8) COLLATE utf8_unicode_ci $sortDirection");
+        } elseif ($sortField == 'facility_id') {
+            // Sắp xếp giá theo kiểu số
+            $query->orderByRaw("CAST($sortField AS DECIMAL) $sortDirection");
+        } 
+        else {
+            $query->orderByRaw("CONVERT(facility_id USING utf8) COLLATE utf8_unicode_ci asc");
+        }
 
-        $facilities = $query->orderBy($sortField, $sortDirection)->get();
+        $facilities = $query->get();
         return view('admin.facility.index')
         ->with('facilities', $facilities)
         ->with('sortField', $sortField)

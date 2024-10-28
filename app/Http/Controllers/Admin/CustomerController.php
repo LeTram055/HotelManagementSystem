@@ -23,14 +23,24 @@ class CustomerController extends Controller
         if ($request->filled('search')) {
             $searchTerm = $request->input('search');
             // Tìm kiếm theo tên, CCCD, email, địa chỉ
-            $query->where('customer_name', 'like', '%' . $searchTerm . '%')
+            $query->where('customer_id', 'like', '%' . $searchTerm . '%')
+                ->orWhere('customer_name', 'like', '%' . $searchTerm . '%')
                 ->orWhere('customer_cccd', 'like', '%' . $searchTerm . '%')
                 ->orWhere('customer_email', 'like', '%' . $searchTerm . '%')
                 ->orWhere('customer_address', 'like', '%' . $searchTerm . '%');
         }
 
+        if (in_array($sortField, ['customer_name', 'customer_cccd','customer_email','customer_address'])) {
+           $query->orderByRaw("CONVERT($sortField USING utf8) COLLATE utf8_unicode_ci $sortDirection");
+        } elseif ($sortField == 'customer_id') {
+            // Sắp xếp giá theo kiểu số
+            $query->orderByRaw("CAST($sortField AS DECIMAL) $sortDirection");
+        } 
+        else {
+            $query->orderByRaw("CONVERT(customer_id USING utf8) COLLATE utf8_unicode_ci asc");
+        }
 
-        $customers = $query->orderBy($sortField, $sortDirection)->get();
+        $customers = $query->get();
         return view('admin.customer.index')
         ->with('customers', $customers)
         ->with('sortField', $sortField)
