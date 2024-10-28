@@ -277,6 +277,10 @@ Route::post('/admin/reservation/delete',
 [ReservationController::class, 'destroy'])
 ->name('admin.reservation.delete');
 
+Route::get('admin/reservation/export', 
+[ReservationController::class, 'exportExcel'])
+->name('admin.reservation.export');
+
 //payment
 Route::get('/admin/payment', 
 [PaymentController::class, 'index'])
@@ -301,3 +305,7 @@ Route::post('admin/payment/update',
 Route::post('/admin/payment/delete', 
 [PaymentController::class, 'destroy'])
 ->name('admin.payment.delete');
+
+Route::get('admin/payment/export', 
+[PaymentController::class, 'exportExcel'])
+->name('admin.payment.export');

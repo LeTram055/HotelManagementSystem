@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
@@ -11,13 +10,53 @@ use App\Models\Rooms;
 use App\Models\RoomReservation;
 use App\Models\Types;
 
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ReservationsExport;
+
 class ReservationController extends Controller
 {
-    public function index()
+
+    public function index(Request $request)
     {
-        $reservations = Reservations::with(['customer', 'rooms.type'])->get();
-        return view('admin/reservation/index')
-            ->with('reservations', $reservations);
+        $sortField = $request->input('sort_field', 'reservation_id'); // Mặc định sắp xếp theo reservation_id
+        $sortDirection = $request->input('sort_direction', 'asc'); // Mặc định sắp xếp tăng dần
+
+        $query = Reservations::join('customers', 'reservations.customer_id', '=', 'customers.customer_id')
+            ->join('room_reservation', 'reservations.reservation_id', '=', 'room_reservation.reservation_id')
+            ->join('rooms', 'room_reservation.room_id', '=', 'rooms.room_id')
+            ->join('types', 'rooms.type_id', '=', 'types.type_id')
+            ->select('reservations.*', 'customers.customer_name', 'rooms.room_name', 'types.type_name');
+
+        // Kiểm tra nếu có input tìm kiếm
+        if ($request->filled('search')) {
+            $searchTerm = $request->input('search');
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('reservations.reservation_id', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('customers.customer_name', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('rooms.room_name', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('types.type_name', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('reservations.reservation_status', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('reservations.reservation_date', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('reservations.reservation_checkin', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('reservations.reservation_checkout', 'like', '%' . $searchTerm . '%');
+            });
+        }
+
+        // Kiểm tra nếu cột sắp xếp hợp lệ
+        if (in_array($sortField, ['customer_name', 'type_name', 'reservation_status', 'reservation_date', 'reservation_checkin', 'reservation_checkout'])) {
+            $query->orderByRaw("CONVERT($sortField USING utf8) COLLATE utf8_unicode_ci $sortDirection");
+        } elseif ($sortField == 'reservation_id') {
+            // Sắp xếp giá theo kiểu số
+            $query->orderByRaw("CAST(reservations.$sortField AS DECIMAL) $sortDirection");
+        } else {
+            $query->orderByRaw("CONVERT(reservations.reservation_id USING utf8) COLLATE utf8_unicode_ci asc");
+        }
+
+        $reservations = $query->get();
+        return view('admin.reservation.index')
+            ->with('reservations', $reservations)
+            ->with('sortField', $sortField)
+            ->with('sortDirection', $sortDirection);
     }
 
     public function create()
@@ -249,5 +288,10 @@ class ReservationController extends Controller
         }
 
         return redirect()->route('admin.reservation.index');
+    }
+
+    public function exportExcel() 
+    {
+        return Excel::download(new ReservationsExport, 'reservations.xlsx');
     }
 }
