@@ -2,6 +2,14 @@
 <nav class="sidebar" id="sidebarMenu">
     <div class="sidebar-sticky">
         <ul class="nav flex-column">
+
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('admin/dashboard*') ? 'active' : '' }}"
+                    href="{{ route('admin.dashboard') }}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>&nbsp;
+                    Dashboard
+                </a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('admin/account*') ? 'active' : '' }}"
                     href="{{ route('admin.account.index') }}">

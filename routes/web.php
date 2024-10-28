@@ -11,13 +11,21 @@ use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\ReservationController;
 use App\Http\Controllers\Admin\PaymentController;
-use App\Exports\CustomersExport;
-use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Controllers\Admin\DashboardController;
+
 
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+//admin..............................................
+
+//dashboard
+Route::get('admin/dashboard',
+ [DashboardController::class, 'index'])
+ ->name('admin.dashboard');
+
 //roomstatus
 Route::get('/admin/roomstatus', 
 [RoomStatusController::class, 'index'])

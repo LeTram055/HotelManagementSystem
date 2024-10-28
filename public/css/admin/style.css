@@ -142,3 +142,15 @@ body {
     color: black;
     
 }
+
+/*dashboard*/
+.chart-container {
+    height: 100%; /* Đảm bảo thẻ chứa co dãn theo chiều cao của thẻ cha */
+}
+
+.chart-body {
+    height: 400px; /* Bạn có thể tùy chỉnh chiều cao ở đây */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
