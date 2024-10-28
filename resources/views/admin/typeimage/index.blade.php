@@ -12,20 +12,47 @@ Quản lý hình ảnh loại phòng
 <div class="flash-message">
     @foreach (['danger', 'warning', 'success', 'info'] as $msg)
     @if(Session::has('alert-' . $msg))
-    <p class="alert alert-{{ $msg }}">{{ Session::get('alert-' . $msg) }} <a href="#" class="close" data-dismiss="alert"
-            aria-label="close">&times;</a></p>
+    <p class="alert alert-{{ $msg }}">{{ Session::get('alert-' . $msg) }} <button type="button" class="btn-close"
+            data-bs-dismiss="alert" aria-label="Close"></p>
     @endif
     @endforeach
 </div>
 
-<a href="{{ route('admin.typeimage.create') }}" class="btn btn-primary mb-3">Thêm mới</a>
+<form method="GET" action="{{ route('admin.typeimage.index') }}" class="row mb-3 justify-content-center">
+    <div class="col-md-6">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control rounded" placeholder="Tìm kiếm thông tin hình ảnh..."
+                value="{{ request('search') }}">
+            <button class="btn btn-bg rounded ms-2" type="submit">Tìm kiếm</button>
+        </div>
+    </div>
+</form>
+
+<div class="d-flex justify-content-between mb-3">
+    <a href="{{ route('admin.typeimage.create') }}" class="btn btn-primary">Thêm mới</a>
+    <a href="{{ route('admin.typeimage.export') }}" class="btn btn-success">Xuất Excel</a>
+</div>
 
 <div class="table-responsive ">
     <table class="table table-striped table-sm">
         <thead>
             <tr>
-                <th class="text-center">Mã hình ảnh</th>
-                <th class="text-center">Loại phòng</th>
+                <th class="text-center"><a
+                        href="{{ route('admin.typeimage.index', ['sort_field' => 'image_id', 'sort_direction' => $sortField == 'image_id' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Mã hình ảnh
+                        @if($sortField == 'image_id')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a>
+                </th>
+                <th class="text-center"><a
+                        href="{{ route('admin.typeimage.index', ['sort_field' => 'type_id', 'sort_direction' => $sortField == 'type_id' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Loại phòng
+                        @if($sortField == 'type_id')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a>
+                </th>
                 <th class="text-center">Hình ảnh</th>
                 <th class="text-center">Hành động</th>
             </tr>

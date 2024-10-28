@@ -130,6 +130,7 @@ Route::post('admin/room/update',
 Route::post('/admin/room/delete', 
 [RoomController::class, 'destroy'])
 ->name('admin.room.delete');
+
 Route::get('admin/room/export', 
 [RoomController::class, 'exportExcel'])
 ->name('admin.room.export');
@@ -158,6 +159,10 @@ Route::post('admin/typeimage/update',
 Route::post('/admin/typeimage/delete', 
 [TypeImageController::class, 'destroy'])
 ->name('admin.typeimage.delete');
+
+Route::get('admin/typeimage/export', 
+[TypeImageController::class, 'exportExcel'])
+->name('admin.typeimage.export');
 
 //customer
 Route::get('/admin/customer', 

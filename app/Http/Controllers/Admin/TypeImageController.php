@@ -9,13 +9,32 @@ use App\Models\TypeImages;
 use App\Models\Types;
 use Illuminate\Support\Facades\Storage;
 
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\TypeImagesExport;
+
 class TypeImageController extends Controller
 {
-    public function index()
-    {
-        $typeImages = TypeImages::all();
-        return view('admin/typeimage/index')
-            ->with('typeImages', $typeImages);
+    public function index(Request $request) {
+        $sortField = $request->input('sort_field', 'image_id'); // Mặc định sắp xếp theo image_id
+        $sortDirection = $request->input('sort_direction', 'asc'); // Mặc định sắp xếp tăng dần
+
+        $query = TypeImages::query();
+        // Kiểm tra nếu có input tìm kiếm
+        if ($request->filled('search')) {
+            $searchTerm = $request->input('search');
+            
+            $query->where('image_id', 'like', '%' . $searchTerm . '%')
+                ->orWhereHas('type', function($q) use ($searchTerm) {
+                $q->where('type_name', 'like', '%' . $searchTerm . '%');
+                })
+                ->orWhere('image_url', 'like', '%' . $searchTerm . '%');
+                
+        }
+        $typeImages = $query->orderBy($sortField, $sortDirection)->get();
+        return view('admin.typeimage.index')
+        ->with('typeImages', $typeImages)
+        ->with('sortField', $sortField)
+        ->with('sortDirection', $sortDirection);
     }
 
     public function create()
@@ -98,5 +117,10 @@ class TypeImageController extends Controller
             Session::flash('alert-danger', 'Không tìm thấy hình ảnh.');
         }
         return redirect()->route('admin.typeimage.index');
+    }
+
+    public function exportExcel() 
+    {
+        return Excel::download(new TypeImagesExport, 'typeimages.xlsx');
     }
 }
