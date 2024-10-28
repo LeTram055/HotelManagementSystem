@@ -248,6 +248,10 @@ Route::post('/admin/account/delete',
 [AccountController::class, 'destroy'])
 ->name('admin.account.delete');
 
+Route::get('admin/account/export', 
+[AccountController::class, 'exportExcel'])
+->name('admin.account.export');
+
 //reservation
 Route::get('/admin/reservation', 
 [ReservationController::class, 'index'])

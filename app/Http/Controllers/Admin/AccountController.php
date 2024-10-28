@@ -9,13 +9,41 @@ use App\Models\Accounts;
 use App\Models\Employees;
 use App\Models\Customers;
 
+use App\Exports\AccountsExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class AccountController extends Controller
 {
-    public function index()
-    {
-        $accounts = Accounts::all();
+    public function index(Request $request) {
+        $sortField = $request->input('sort_field', 'account_id'); // Mặc định sắp xếp theo account_id
+        $sortDirection = $request->input('sort_direction', 'asc'); // Mặc định sắp xếp tăng dần
+
+        $query = Accounts::query();
+        // Kiểm tra nếu có input tìm kiếm
+        if ($request->filled('search')) {
+            $searchTerm = $request->input('search');
+            
+            $query->where('account_id', 'like', '%' . $searchTerm . '%')
+                ->orwhere('account_username', 'like', '%' . $searchTerm . '%')
+                ->orWhere('account_role', 'like', '%' . $searchTerm . '%')
+                ->orWhere('account_active', 'like', '%' . $searchTerm . '%');
+        }
+
+        if (in_array($sortField, ['account_username', 'account_role','account_active'])) {
+            $query->orderByRaw("CONVERT($sortField USING utf8) COLLATE utf8_unicode_ci $sortDirection");
+        } elseif ($sortField == 'account_id') {
+            // Sắp xếp giá theo kiểu số
+            $query->orderByRaw("CAST($sortField AS DECIMAL) $sortDirection");
+        } 
+        else {
+            $query->orderByRaw("CONVERT(account_id USING utf8) COLLATE utf8_unicode_ci asc");
+        }
+
+        $accounts = $query->get();
         return view('admin.account.index')
-            ->with('accounts', $accounts);
+        ->with('accounts', $accounts)
+        ->with('sortField', $sortField)
+        ->with('sortDirection', $sortDirection);
     }
 
     public function create()
@@ -123,5 +151,10 @@ class AccountController extends Controller
         
         Session::flash('alert-info', 'Xóa thành công ^^~!!!');
         return redirect()->route('admin.account.index');
+    }
+
+    public function exportExcel() 
+    {
+        return Excel::download(new AccountsExport, 'accounts.xlsx');
     }
 }

@@ -12,24 +12,64 @@ Quản lý tài khoản
 <div class="flash-message">
     @foreach (['danger', 'warning', 'success', 'info'] as $msg)
     @if(Session::has('alert-' . $msg))
-    <p class="alert alert-{{ $msg }}">{{ Session::get('alert-' . $msg) }} <a href="#" class="close" data-dismiss="alert"
-            aria-label="close">&times;</a></p>
+    <p class="alert alert-{{ $msg }}">{{ Session::get('alert-' . $msg) }} <button type="button" class="btn-close"
+            data-bs-dismiss="alert" aria-label="Close"></p>
     @endif
     @endforeach
 </div>
 
-<a href="{{ route('admin.account.create') }}" class="btn btn-primary mb-3">Thêm mới</a>
+<form method="GET" action="{{ route('admin.account.index') }}" class="row mb-3 justify-content-center">
+    <div class="col-md-6">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control rounded" placeholder="Tìm kiếm nhân viên..."
+                value="{{ request('search') }}">
+            <button class="btn btn-bg rounded ms-2" type="submit">Tìm kiếm</button>
+        </div>
+    </div>
+</form>
+
+<div class="d-flex justify-content-between mb-3">
+    <a href="{{ route('admin.account.create') }}" class="btn btn-primary">Thêm mới</a>
+    <a href="{{ route('admin.account.export') }}" class="btn btn-success">Xuất Excel</a>
+</div>
 
 <div class="table-responsive ">
     <table class="table table-striped table-sm">
         <thead>
             <tr>
-                <th class="text-center">Mã tài khoản</th>
-                <th class="text-center">Tên tài khoản</th>
-                <th class="text-center">Email</th>
-                <th class="text-center">Mật khẩu</th>
-                <th class="text-center">Vai trò</th>
-                <th class="text-center">Tình trạng hoạt động</th>
+                <th class="text-center"><a
+                        href="{{ route('admin.account.index', ['sort_field' => 'account_id', 'sort_direction' => $sortField == 'account_id' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Mã tài khoản
+                        @if($sortField == 'account_id')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a>
+                </th>
+                <th class="text-center"><a
+                        href="{{ route('admin.account.index', ['sort_field' => 'account_username', 'sort_direction' => $sortField == 'account_username' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Tên tài khoản
+                        @if($sortField == 'account_username')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a>
+                </th>
+
+                <th class="text-center"><a
+                        href="{{ route('admin.account.index', ['sort_field' => 'account_role', 'sort_direction' => $sortField == 'account_role' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Vai trò
+                        @if($sortField == 'account_role')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a>
+                </th>
+                <th class="text-center"><a
+                        href="{{ route('admin.account.index', ['sort_field' => 'account_active', 'sort_direction' => $sortField == 'account_active' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                        Tình trạng hoạt động
+                        @if($sortField == 'account_active')
+                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
+                        @endif
+                    </a>
+                </th>
                 <th class="text-center">Hành động</th>
             </tr>
         </thead>
@@ -38,10 +78,9 @@ Quản lý tài khoản
             <tr>
                 <td class="text-center">{{ $account->account_id }}</td>
                 <td>{{ $account->account_username }}</td>
-                <td>{{ $account->account_email}}</td>
-                <td>{{ $account->account_password}}</td>
-                <td>{{ $account->account_role}}</td>
-                <td>{{ $account->account_active }}</td>
+
+                <td class="text-center">{{ $account->account_role}}</td>
+                <td class="text-center">{{ $account->account_active }}</td>
                 <td>
                     <div class="d-flex justify-content-center">
                         <a href="{{ route('admin.account.edit', ['account_id' => $account->account_id]) }}"
