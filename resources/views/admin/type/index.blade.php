@@ -83,7 +83,7 @@ Quản lý loại phòng
             <tr>
                 <td class="text-center">{{ $type->type_id }}</td>
                 <td>{{ $type->type_name }}</td>
-                <td class="text-end">{{ $type->type_price }}</td>
+                <td class="text-end">{{ number_format($type->type_price, 0, ',', '.') }}</td>
                 <td class="text-center">{{ $type->type_capacity }}</td>
                 <td class="text-center">{{ $type->type_area }}</td>
                 <td>
