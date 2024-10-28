@@ -9,13 +9,49 @@ use App\Models\Payments;
 use App\Models\Employees;
 use App\Models\Reservations;
 
+use App\Exports\PaymentsExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class PaymentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $payments = Payments::with(['employee', 'reservation.customer'])->get();
+        $sortField = $request->input('sort_field', 'payment_id'); // Mặc định sắp xếp theo payment_id
+        $sortDirection = $request->input('sort_direction', 'asc'); // Mặc định sắp xếp tăng dần
+
+        $query = Payments::join('employees', 'payments.employee_id', '=', 'employees.employee_id')
+            ->join('reservations', 'payments.reservation_id', '=', 'reservations.reservation_id')
+            ->join('customers', 'reservations.customer_id', '=', 'customers.customer_id')
+            ->select('payments.*', 'employees.employee_name', 'customers.customer_name');
+
+        // Kiểm tra nếu có input tìm kiếm
+        if ($request->filled('search')) {
+            $searchTerm = $request->input('search');
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('payments.payment_id', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('payments.payment_price', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('employees.employee_name', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('customers.customer_name', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('payments.payment_date', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('payments.payment_method', 'like', '%' . $searchTerm . '%');
+            });
+        }
+
+        // Kiểm tra nếu cột sắp xếp hợp lệ
+        if (in_array($sortField, ['employee_name', 'customer_name', 'payment_date', 'payment_method'])) {
+            $query->orderByRaw("CONVERT($sortField USING utf8) COLLATE utf8_unicode_ci $sortDirection");
+        } elseif (in_array($sortField, ['payment_id', 'payment_price'])) {
+            // Sắp xếp giá theo kiểu số
+            $query->orderByRaw("CAST($sortField AS DECIMAL) $sortDirection");
+        } else {
+            $query->orderByRaw("CONVERT(payments.payment_id USING utf8) COLLATE utf8_unicode_ci asc");
+        }
+
+        $payments = $query->get();
         return view('admin.payment.index')
-            ->with('payments', $payments);
+            ->with('payments', $payments)
+            ->with('sortField', $sortField)
+            ->with('sortDirection', $sortDirection);
     }
 
     public function create()
@@ -122,5 +158,10 @@ class PaymentController extends Controller
         $payment->destroy($request->payment_id);
         Session::flash('alert-info', 'Xóa thành công ^^~!!!');
         return redirect()->route('admin.payment.index');
+    }
+
+    public function export()
+    {
+        return Excel::download(new PaymentsExport, 'payments.xlsx');
     }
 }
