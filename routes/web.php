@@ -325,4 +325,4 @@ Route::get('admin/payment/export',
 
 //client..............................................
 // routes/web.php
-require base_path('routes/api.php');
+require base_path('routes/customer.php');
