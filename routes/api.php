@@ -1,6 +1,6 @@
 <?php
     use Illuminate\Support\Facades\Route;
-    use App\Http\Controllers\Client\TypeController;
+    use App\Http\Controllers\Customer\TypeController;
 
 
 Route::get('client/types', [TypeController::class, 'index']);
