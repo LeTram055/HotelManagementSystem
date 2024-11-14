@@ -321,3 +321,8 @@ Route::post('/admin/payment/delete',
 Route::get('admin/payment/export', 
 [PaymentController::class, 'exportExcel'])
 ->name('admin.payment.export');
+
+
+//client..............................................
+// routes/web.php
+require base_path('routes/api.php');

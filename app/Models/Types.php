@@ -33,4 +33,13 @@ class Types extends Model
     {
         return $this->hasMany(Rooms::class, 'type_id', 'type_id');
     }
+
+    public function availableRooms()
+    {
+        return $this->rooms()
+            ->whereHas('status', function ($query) {
+                $query->where('status_name', 'Trống'); // Kiểm tra tên trạng thái là "Trống"
+            })
+            ->count();
+    }
 }
