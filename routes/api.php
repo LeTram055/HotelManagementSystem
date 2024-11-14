@@ -3,5 +3,5 @@
     use App\Http\Controllers\Customer\TypeController;
 
 
-Route::get('client/types', [TypeController::class, 'index']);
-Route::get('client/types/{id}', [TypeController::class, 'show']);
+Route::get('customer/types', [TypeController::class, 'index']);
+Route::get('customer/types/{id}', [TypeController::class, 'show']);
