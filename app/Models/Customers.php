@@ -13,6 +13,7 @@ class Customers extends Model
         'customer_name',
         'customer_cccd',
         'customer_address',
+        'customer_email',
         'account_id',
     ];
     protected $guarded = ['customer_id'];

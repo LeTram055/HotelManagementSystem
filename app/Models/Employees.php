@@ -14,6 +14,7 @@ class Employees extends Model
         'employee_phone',
         'employee_address',
         'employee_status',
+        'employee_email',
         'account_id',
     ];
     protected $guarded = ['employee_id'];
