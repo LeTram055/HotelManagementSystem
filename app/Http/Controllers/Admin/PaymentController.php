@@ -72,14 +72,17 @@ class PaymentController extends Controller
     // Lưu Payment mới vào database
     public function save(Request $request)
     {
-        // Validate dữ liệu đầu vào
-        // $request->validate([
-        //     'employee_id' => 'required|exists:employees,employee_id',
-        //     'reservation_id' => 'required|exists:reservations,reservation_id',
-        //     'payment_date' => 'required|date',
-        //     'payment_price' => 'required|numeric|min:0',
-        //     
-        // ]);
+        $request->validate([
+        'payment_id' => 'required|exists:payments,payment_id',
+        'employee_id' => 'required|exists:employees,employee_id',
+        'payment_method' => 'required|string|max:50',
+    ], [
+        'employee_id.required' => 'Nhân viên không được để trống',
+        'employee_id.exists' => 'Nhân viên không tồn tại',
+        'payment_method.required' => 'Phương thức thanh toán không được để trống',
+        'payment_method.string' => 'Phương thức thanh toán phải là chuỗi ký tự',
+        'payment_method.max' => 'Phương thức thanh toán không được vượt quá 50 ký tự',
+    ]);
         
 
         // Lấy thông tin đặt phòng và tính toán giá trị thanh toán
@@ -137,6 +140,12 @@ class PaymentController extends Controller
         'payment_id' => 'required|exists:payments,payment_id',
         'employee_id' => 'required|exists:employees,employee_id',
         'payment_method' => 'required|string|max:50',
+    ], [
+        'employee_id.required' => 'Nhân viên không được để trống',
+        'employee_id.exists' => 'Nhân viên không tồn tại',
+        'payment_method.required' => 'Phương thức thanh toán không được để trống',
+        'payment_method.string' => 'Phương thức thanh toán phải là chuỗi ký tự',
+        'payment_method.max' => 'Phương thức thanh toán không được vượt quá 50 ký tự',
     ]);
 
     $payment = Payments::find($request->payment_id);

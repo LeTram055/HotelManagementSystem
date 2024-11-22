@@ -53,7 +53,19 @@ class EmployeeController extends Controller
     public function save(Request $request)
     {
         $request->validate([
-            'employee_phone' => 'required|string|regex:/^[0][0-9]{9}$/'
+            'employee_name' => 'required|string',
+            'employee_phone' => 'required|string|regex:/^(09|08|07|05|03)[0-9]{8}$/',
+            'employee_email' => 'required|email',
+            'employee_address' => 'required|string',
+            
+        ], [
+            'employee_phone.regex' => 'Số điện thoại không hợp lệ',
+            'employee_email.email' => 'Email không hợp lệ',
+            'employee_address.required' => 'Địa chỉ không được để trống',
+            'employee_name.required' => 'Tên nhân viên không được để trống',
+            'employee_phone.required' => 'Số điện thoại không được để trống',
+            'employee_email.required' => 'Email không được để trống',
+            
         ]);
         $employee = new Employees();
         $employee->employee_name = $request->employee_name;
@@ -76,7 +88,19 @@ class EmployeeController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'employee_phone' => 'required|string|regex:/^[0][0-9]{9}$/'
+            'employee_name' => 'required|string',
+            'employee_phone' => 'required|string|regex:/^(09|08|07|05|03)[0-9]{8}$/',
+            'employee_email' => 'required|email',
+            'employee_address' => 'required|string',
+            
+        ], [
+            'employee_phone.regex' => 'Số điện thoại không hợp lệ',
+            'employee_email.email' => 'Email không hợp lệ',
+            'employee_address.required' => 'Địa chỉ không được để trống',
+            'employee_name.required' => 'Tên nhân viên không được để trống',
+            'employee_phone.required' => 'Số điện thoại không được để trống',
+            'employee_email.required' => 'Email không được để trống',
+            
         ]);
         
         $employee = Employees::find($request->employee_id);

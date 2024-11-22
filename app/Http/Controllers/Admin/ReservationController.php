@@ -102,7 +102,7 @@ class ReservationController extends Controller
     {
 
         // Kiểm tra dữ liệu đầu vào từ form
-        $validatedData = $request->validate([
+        $request->validate([
         'customer_id' => 'required|exists:customers,customer_id',
         'room_ids' => 'required|array', 
         'room_ids.*' => 'exists:rooms,room_id',

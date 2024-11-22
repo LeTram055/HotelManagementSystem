@@ -55,6 +55,22 @@ class TypeController extends Controller
 
     public function save(Request $request)
     {
+        $request->validate([
+            'type_name' => 'required|string|unique:types,type_name',
+            'type_price' => 'required|numeric',
+            'type_capacity' => 'required|integer',
+            'type_area' => 'required|numeric',
+        ], [
+            'type_name.required' => 'Vui lòng nhập tên loại phòng',
+            'type_name.unique' => 'Tên loại phòng đã tồn tại',
+            'type_price.required' => 'Vui lòng nhập giá loại phòng',
+            'type_price.numeric' => 'Giá loại phòng phải là số',
+            'type_capacity.required' => 'Vui lòng nhập số lượng người',
+            'type_capacity.integer' => 'Số lượng người phải là số nguyên',
+            'type_area.required' => 'Vui lòng nhập diện tích',
+            'type_area.numeric' => 'Diện tích phải là số',
+        ]);
+
         $type = new Types();
         $type->type_name = $request->type_name;
         $type->type_price = $request->type_price;
@@ -82,6 +98,22 @@ class TypeController extends Controller
 
     public function update(Request $request)
     {
+        $request->validate([
+            'type_name' => 'required|string|unique:types,type_name',
+            'type_price' => 'required|numeric',
+            'type_capacity' => 'required|integer',
+            'type_area' => 'required|numeric',
+        ], [
+            'type_name.required' => 'Vui lòng nhập tên loại phòng',
+            'type_name.unique' => 'Tên loại phòng đã tồn tại',
+            'type_price.required' => 'Vui lòng nhập giá loại phòng',
+            'type_price.numeric' => 'Giá loại phòng phải là số',
+            'type_capacity.required' => 'Vui lòng nhập số lượng người',
+            'type_capacity.integer' => 'Số lượng người phải là số nguyên',
+            'type_area.required' => 'Vui lòng nhập diện tích',
+            'type_area.numeric' => 'Diện tích phải là số',
+        ]);
+
         $type = Types::find($request->type_id);
 
         //Cập nhật loai phòng

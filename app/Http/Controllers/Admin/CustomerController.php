@@ -55,8 +55,22 @@ class CustomerController extends Controller
     public function save(Request $request)
     {
         $request->validate([
-            'customer_cccd' => 'required|string|regex:/^[0-9]{12}$/'
-        ]);
+            'customer_cccd' => 'required|string|regex:/^(09|08|07|05|03)[0-9]{8}$/',
+            'customer_email' => 'required|email',
+            'customer_address' => 'required|string',
+            'customer_name' => 'required|string',
+            
+        ], [
+        'customer_cccd.required' => 'CCCD không được để trống.',
+        'customer_cccd.string' => 'CCCD phải là chuỗi ký tự.',
+        'customer_cccd.regex' => 'CCCD phải có 12 chữ số.',
+        'customer_email.required' => 'Email không được để trống.',
+        'customer_email.email' => 'Email không hợp lệ.',
+        'customer_address.required' => 'Địa chỉ không được để trống.',
+        'customer_name.required' => 'Tên không được để trống.',
+        'customer_name.string' => 'Tên phải là chuỗi ký tự.',
+        
+    ]);
         $customer = new Customers();
         $customer->customer_name = $request->customer_name;
         $customer->customer_cccd= $request->customer_cccd;
@@ -77,8 +91,22 @@ class CustomerController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'customer_cccd' => 'required|string|regex:/^[0-9]{12}$/'
-        ]);
+            'customer_cccd' => 'required|string|regex:/^(09|08|07|05|03)[0-9]{8}$/',
+            'customer_email' => 'required|email',
+            'customer_address' => 'required|string',
+            'customer_name' => 'required|string',
+            
+        ], [
+        'customer_cccd.required' => 'CCCD không được để trống.',
+        'customer_cccd.string' => 'CCCD phải là chuỗi ký tự.',
+        'customer_cccd.regex' => 'CCCD phải có 12 chữ số.',
+        'customer_email.required' => 'Email không được để trống.',
+        'customer_email.email' => 'Email không hợp lệ.',
+        'customer_address.required' => 'Địa chỉ không được để trống.',
+        'customer_name.required' => 'Tên không được để trống.',
+        'customer_name.string' => 'Tên phải là chuỗi ký tự.',
+        
+    ]);
         
         $customer = Customers::find($request->customer_id);
         $customer->customer_name = $request->customer_name;

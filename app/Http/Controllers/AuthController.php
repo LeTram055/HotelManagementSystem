@@ -37,6 +37,11 @@ class AuthController extends Controller
             return back()->withErrors(['account_password' => 'Mật khẩu không chính xác']);
         }
 
+        // Kiểm tra nếu tài khoản bị khóa
+        if ($account->account_active === 'locked') {
+            return back()->withErrors(['account_username' => 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.']);
+        }
+
         // Kiểm tra vai trò của tài khoản, chỉ cho phép 'admin' hoặc 'employee' đăng nhập
         if ($account->account_role !== 'admin' && $account->account_role !== 'employee') {
             return back()->with('alert-danger', 'Bạn không có quyền truy cập');

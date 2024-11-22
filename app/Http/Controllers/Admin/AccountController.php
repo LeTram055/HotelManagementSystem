@@ -60,12 +60,22 @@ class AccountController extends Controller
     public function save(Request $request)
     {
         $request->validate([
-            'account_username' => 'required|string',
-            'account_password' => 'required|string|min:6',
+            'account_username' => 'required|string|unique:accounts',
+            'account_password' => 'required|string|min:8',
             'account_role' => 'required|string',
             'user_id' => 'required|integer',
             'account_active' => 'required|in:active,locked',
-        ]);
+        ], [
+        'account_username.unique' => 'Tên tài khoản đã tồn tại. Vui lòng chọn tên khác.',
+        'account_username.required' => 'Tên tài khoản không được để trống.',
+        'account_password.required' => 'Mật khẩu không được để trống.',
+        'account_password.min' => 'Mật khẩu phải có ít nhất :min ký tự.',
+        'account_role.required' => 'Vai trò tài khoản không được để trống.',
+        'user_id.required' => 'Người dùng liên kết không được để trống.',
+        
+        'account_active.required' => 'Trạng thái tài khoản không được để trống.',
+        'account_active.in' => 'Trạng thái tài khoản không hợp lệ.',
+    ]);
         $account = new Accounts();
         $account->account_username = $request->account_username;
         $account->account_password = bcrypt($request->account_password);
@@ -113,6 +123,13 @@ class AccountController extends Controller
             'account_role' => 'required|string',
             'user_id' => 'required|integer',
             'account_active' => 'required|in:active,locked',
+        ], [
+            'account_username.required' => 'Tên tài khoản không được để trống.',
+            'account_role.required' => 'Vai trò tài khoản không được để trống.',
+            'user_id.required' => 'Người dùng liên kết không được để trống.',
+            'user_id.integer' => 'Người dùng phải là một số hợp lệ.',
+            'account_active.required' => 'Trạng thái tài khoản không được để trống.',
+            'account_active.in' => 'Trạng thái tài khoản không hợp lệ.',
         ]);
 
         $account = Accounts::find($request->account_id);

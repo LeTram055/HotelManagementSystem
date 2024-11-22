@@ -60,7 +60,18 @@ class TypeImageController extends Controller
     public function save(Request $request)
     {
         //ràng buộc 
-            $validation = $request->validate(['image_url' => 'required|file|image|mimes:jpeg,png,gif,webp|max:2048',]);
+            $request->validate(['image_url' => 'required|file|image|mimes:jpeg,png,gif,webp|max:2048',
+            'type_id' => 'required|integer|exists:types,type_id',
+        ], [
+            'image_url.required' => 'Vui lòng chọn file hình ảnh',
+            'image_url.file' => 'File tải lên không hợp lệ',
+            'image_url.image' => 'File tải lên không phải là hình ảnh',
+            'image_url.mimes' => 'File tải lên phải có định dạng jpeg, png, gif, webp',
+            'image_url.max' => 'Dung lượng file tải lên không được vượt quá 2MB',
+            'type_id.required' => 'Vui lòng chọn loại phòng',
+            'type_id.integer' => 'Loại phòng không hợp lệ',
+            'type_id.exists' => 'Loại phòng không tồn tại',
+        ]);
     
         if ($request->hasFile('image_url')) {
             $typeImage = new TypeImages();
@@ -94,6 +105,22 @@ class TypeImageController extends Controller
 
     public function update(Request $request)
     {
+        $request->validate([
+            'image_id' => 'required|integer|exists:type_images,image_id',
+            'type_id' => 'required|integer|exists:types,type_id',
+            'image_url' => 'file|image|mimes:jpeg,png,gif,webp|max:2048',
+        ], [
+            'image_id.required' => 'Không tìm thấy hình ảnh',
+            'image_id.integer' => 'ID hình ảnh không hợp lệ',
+            'image_id.exists' => 'Hình ảnh không tồn tại',
+            'type_id.required' => 'Vui lòng chọn loại phòng',
+            'type_id.integer' => 'Loại phòng không hợp lệ',
+            'type_id.exists' => 'Loại phòng không tồn tại',
+            'image_url.file' => 'File tải lên không hợp lệ',
+            'image_url.image' => 'File tải lên không phải là hình ảnh',
+            'image_url.mimes' => 'File tải lên phải có định dạng jpeg, png, gif, webp',
+            'image_url.max' => 'Dung lượng file tải lên không được vượt quá 2MB',
+        ]);
         $typeImage = TypeImages::find($request->image_id);
         $newImage = $request->file('image_url');
 

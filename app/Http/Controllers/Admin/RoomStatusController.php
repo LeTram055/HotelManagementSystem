@@ -51,6 +51,14 @@ class RoomStatusController extends Controller
 
     public function save(Request $request)
     {
+        $request->validate([
+            'status_name' => 'required|string|unique:room_statuses,status_name',
+
+        ], [
+            'status_name.required' => 'Vui lòng nhập tên trạng thái phòng',
+            'status_name.unique' => 'Tên trạng thái phòng đã tồn tại',
+        ]);
+
         $roomStatus = new RoomStatuses();
         $roomStatus->status_name = $request->status_name;
         $roomStatus->save();
@@ -67,6 +75,13 @@ class RoomStatusController extends Controller
 
     public function update(Request $request)
     {
+        $request->validate([
+            'status_id' => 'required|integer|exists:room_statuses,status_id',
+            'status_name' => 'required|string|unique:room_statuses,status_name',
+        ], [
+            'status_name.required' => 'Vui lòng nhập tên trạng thái phòng',
+            'status_name.unique' => 'Tên trạng thái phòng đã tồn tại',
+        ]);
         $roomStatus = RoomStatuses::find($request->status_id);
         $roomStatus->status_name = $request->status_name;
         $roomStatus->save();

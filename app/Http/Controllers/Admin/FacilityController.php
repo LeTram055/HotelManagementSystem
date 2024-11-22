@@ -50,6 +50,15 @@ class FacilityController extends Controller
 
     public function save(Request $request)
     {
+        $request->validate([
+            'facility_name' => 'required|string|unique:facilities,facility_name',
+            'facility_description' => 'required|string',
+        ], [
+            'facility_name.required' => 'Vui lòng nhập tên tiện ích',
+            'facility_name.unique' => 'Tên tiện ích đã tồn tại',
+            'facility_description.required' => 'Vui lòng nhập mô tả tiện ích',
+        ]);
+
         $facility = new Facilities();
         $facility->facility_name = $request->facility_name;
         $facility->facility_description = $request->facility_description;
@@ -67,6 +76,15 @@ class FacilityController extends Controller
 
     public function update(Request $request)
     {
+        $request->validate([
+            'facility_name' => 'required|string|unique:facilities,facility_name',
+            'facility_description' => 'required|string',
+        ], [
+            'facility_name.required' => 'Vui lòng nhập tên tiện ích',
+            'facility_name.unique' => 'Tên tiện ích đã tồn tại',
+            'facility_description.required' => 'Vui lòng nhập mô tả tiện ích',
+        ]);
+
         $facility = Facilities::find($request->facility_id);
         $facility->facility_name = $request->facility_name;
         $facility->facility_description = $request->facility_description;

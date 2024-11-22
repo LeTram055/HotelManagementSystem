@@ -65,6 +65,19 @@ class RoomController extends Controller
 
     public function save(Request $request)
     {
+        $request->validate([
+            'room_name' => 'required|unique:rooms',
+            'type_id' => 'required|integer|exists:types,type_id',
+            'status_id' => 'required|integer|exists:room_statuses,status_id',
+            
+        ], [
+            'room_name.required' => 'Tên phòng không được để trống.',
+            'room_name.unique' => 'Tên phòng đã tồn tại. Vui lòng chọn tên khác.',
+            'type_id.required' => 'Loại phòng không được để trống.',
+            'status_id.required' => 'Trạng thái phòng không được để trống.',
+            
+        ]);
+
         $room = new Rooms();
         $room->room_name = $request->room_name;
         $room->type_id = $request->type_id;
@@ -87,7 +100,21 @@ class RoomController extends Controller
     }
 
     public function update(Request $request)
-    {
+    {   
+        $request->validate([
+            'room_id' => 'required|exists:rooms,room_id',
+            'room_name' => 'required|unique:rooms',
+            'type_id' => 'required|integer|exists:types,type_id',
+            'status_id' => 'required|integer|exists:room_statuses,status_id',
+            
+        ], [
+            'room_name.required' => 'Tên phòng không được để trống.',
+            'room_name.unique' => 'Tên phòng đã tồn tại. Vui lòng chọn tên khác.',
+            'type_id.required' => 'Loại phòng không được để trống.',
+            'status_id.required' => 'Trạng thái phòng không được để trống.',
+            
+        ]);
+
         $room = Rooms::find($request->room_id);
         $room->room_name = $request->room_name;
         $room->type_id = $request->type_id;
