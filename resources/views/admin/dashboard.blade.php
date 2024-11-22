@@ -81,7 +81,7 @@ Bảng điều khiển
     <div class="row">
         <div class="col-md-6">
             <div class="card mb-3">
-                <div class="card-header">Thống kê tình trạng phòng</div>
+                <div class="card-header">Thống kê tình trạng phòng hôm nay</div>
                 <div class="card-body chart-container  chart-body">
                     <canvas id="roomsChart" data-available="{{ $roomsData['available'] }}"
                         data-booked="{{ $roomsData['booked'] }}"
