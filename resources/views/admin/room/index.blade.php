@@ -9,139 +9,110 @@ Quản lý phòng
 @endsection
 
 @section('content')
-<div class="flash-message">
-    @foreach (['danger', 'warning', 'success', 'info'] as $msg)
-    @if(Session::has('alert-' . $msg))
-    <p class="alert alert-{{ $msg }}">{{ Session::get('alert-' . $msg) }} <button type="button" class="btn-close"
-            data-bs-dismiss="alert" aria-label="Close"></p>
+<div class="container">
+    @if(Auth::user() && Auth::user()->account_role == 'admin')
+    <div class="d-flex justify-content-between mb-3">
+        <a href="{{ route('admin.room.create') }}" class="btn btn-primary">Thêm mới</a>
+        <a href="{{ route('admin.room.export') }}" class="btn btn-success">Xuất Excel</a>
+    </div>
     @endif
+    <!-- Form chọn khoảng ngày và bộ lọc -->
+    <form action="{{ route('admin.room.index') }}" method="GET" class="mb-4">
+        <div class="row">
+            <div class="col-md-3">
+                <label for="start_date">Ngày bắt đầu:</label>
+                <input type="date" id="start_date" name="start_date" class="form-control" value="{{ $startDate ?? '' }}"
+                    required>
+            </div>
+            <div class="col-md-3">
+                <label for="end_date">Ngày kết thúc:</label>
+                <input type="date" id="end_date" name="end_date" class="form-control" value="{{ $endDate ?? '' }}"
+                    required>
+                @error('end_date')
+                <small id="end_date" class="form-text text-danger">{{ $message }}</small>
+                @enderror
+            </div>
+            <div class="col-md-3">
+                <label for="room_type">Loại phòng:</label>
+                <select id="room_type" name="room_type" class="form-control">
+                    <option value="">Tất cả</option>
+                    @foreach ($roomTypes as $type)
+                    <option value="{{ $type->type_id }}" {{ $type->type_id == $roomType ? 'selected' : '' }}>
+                        {{ $type->type_name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="room_status">Trạng thái phòng:</label>
+                <select id="room_status" name="room_status" class="form-control">
+                    <option value="">Tất cả</option>
+                    <option value="Trống" {{ $roomStatus == 'Trống' ? 'selected' : '' }}>Trống</option>
+                    <option value="Đang sử dụng" {{ $roomStatus == 'Đang sử dụng' ? 'selected' : '' }}>Đang sử dụng
+                    </option>
+                    <option value="Đã đặt" {{ $roomStatus == 'Đã đặt' ? 'selected' : '' }}>Đã đặt</option>
+                    <option value="Đang sửa" {{ $roomStatus == 'Đang sửa' ? 'selected' : '' }}>Đang sửa</option>
+                </select>
+            </div>
+        </div>
+        <!-- <div class="row">
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary">Xem trạng thái</button>
+            </div>
+        </div> -->
+        <div class="row mt-3">
+            <div class="col-md-9">
+                <label for="room_name">Tìm kiếm theo tên phòng:</label>
+                <input type="text" id="room_name" name="search" class="form-control"
+                    value="{{ request()->input('search') }}">
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary mt-4">Tìm kiếm</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Hiển thị phòng theo từng loại -->
+    @foreach ($rooms->groupBy('type.type_name') as $typeName => $typeRooms)
+    <div class="mb-4">
+        <h3 class="mb-3">{{ $typeName ?? 'Loại phòng chưa xác định' }}</h3>
+        <div class="row">
+            @foreach ($typeRooms as $room)
+            @php
+            // Kiểm tra trạng thái phòng
+            $status = $roomStatuses[$room->room_id] ?? 'Trống'; // Nếu không có, mặc định là 'Trống'
+            $bgClass = match ($status) {
+            'Trống' => 'bg-success', // Màu xanh lá cây
+            'Đang sử dụng' => 'bg-warning', // Màu vàng
+            'Đã đặt' => 'bg-danger', // Màu đỏ
+            'Đang sửa' => 'bg-secondary', // Màu xám
+            default => 'bg-info', // Màu xám nhạt
+            };
+            @endphp
+            <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+                <div class="card text-white {{ $bgClass }} text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Phòng {{ $room->room_name }}</h5>
+                        <p class="card-text">{{ $room->room_note }}</p>
+                        <p class="badge text-dark">{{ $status }}</p>
+
+                        @if(Auth::user() && Auth::user()->account_role == 'admin')
+                        <div class="d-flex justify-content-center">
+                            <a href="{{ route('admin.room.edit', ['room_id' => $room->room_id]) }}"
+                                class="btn btn-outline-light btn-sm">Sửa</a>
+                            <form class="mx-1" name=frmDelete method="post" action="{{ route('admin.room.delete') }}">
+                                @csrf
+                                <input type="hidden" name="room_id" value="{{ $room->room_id }}">
+                                <button type="submit"
+                                    class="btn btn-outline-dark btn-sm btn-sm delete-room-btn">Xóa</button>
+                            </form>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
     @endforeach
 </div>
-
-<form method="GET" action="{{ route('admin.room.index') }}" class="row mb-3 justify-content-center">
-    <div class="col-md-6">
-        <div class="input-group">
-            <input type="text" name="search" class="form-control rounded" placeholder="Tìm kiếm phòng..."
-                value="{{ request('search') }}">
-            <button class="btn btn-bg rounded ms-2" type="submit">Tìm kiếm</button>
-        </div>
-    </div>
-</form>
-
-<div class="d-flex justify-content-between mb-3">
-    <a href="{{ route('admin.room.create') }}" class="btn btn-primary">Thêm mới</a>
-    <a href="{{ route('admin.room.export') }}" class="btn btn-success">Xuất Excel</a>
-</div>
-
-
-<div class="table-responsive ">
-    <table class="table table-striped table-sm">
-        <thead>
-            <tr>
-                <th class="text-center"><a
-                        href="{{ route('admin.room.index', ['sort_field' => 'room_id', 'sort_direction' => $sortField == 'room_id' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
-                        Mã phòng
-                        @if($sortField == 'room_id')
-                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
-                        @endif
-                    </a>
-                </th>
-                <th class="text-center"><a
-                        href="{{ route('admin.room.index', ['sort_field' => 'room_name', 'sort_direction' => $sortField == 'room_name' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
-                        Tên phòng
-                        @if($sortField == 'room_name')
-                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
-                        @endif
-                    </a>
-                </th>
-                <th class="text-center"><a
-                        href="{{ route('admin.room.index', ['sort_field' => 'type_name', 'sort_direction' => $sortField == 'type_name' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
-                        Loại phòng
-                        @if($sortField == 'type_name')
-                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
-                        @endif
-                    </a>
-                </th>
-                <th class="text-center"><a
-                        href="{{ route('admin.room.index', ['sort_field' => 'status_name', 'sort_direction' => $sortField == 'status_name' && $sortDirection == 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
-                        Tình trạng phòng
-                        @if($sortField == 'status_name')
-                        <i class="fas {{ $sortDirection == 'asc' ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
-                        @endif
-                    </a>
-                </th>
-                <th class="text-center">Ghi chú</th>
-                <th class="text-center">Hành động</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($rooms as $room)
-            <tr>
-                <td class="text-center">{{ $room->room_id }}</td>
-                <td class="text-center">{{ $room->room_name }}</td>
-                <td>{{ $room->type->type_name }}</td>
-                <td class="text-center">{{ $room->status->status_name }}</td>
-                <td>{{ $room->room_note }}</td>
-                <td>
-                    <div class="d-flex justify-content-center">
-                        <a href="{{ route('admin.room.edit', ['room_id' => $room->room_id]) }}"
-                            class="btn btn-warning btn-sm">Sửa</a>
-                        <form class="mx-1" name=frmDelete method="post" action="{{ route('admin.room.delete') }}">
-                            @csrf
-                            <input type="hidden" name="room_id" value="{{ $room->room_id }}">
-                            <button type="submit" class="btn btn-danger btn-sm btn-sm delete-room-btn">Xóa</button>
-                        </form>
-                    </div>
-
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="delete-confirm" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteConfirmLabel">Xác nhận xóa</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-danger" id="confirm-delete">Xóa</button>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection
-
-@section('custom-scripts')
-<script>
-$(document).ready(function() {
-    let formToSubmit;
-
-    $('.delete-room-btn').on('click', function(e) {
-        e.preventDefault();
-
-        formToSubmit = $(this).closest('form');
-        const roomName = $(this).closest('tr').find('td').eq(1).text();
-
-        if (roomName.length > 0) {
-            $('.modal-body').html(`Bạn có muốn xóa phòng "${roomName}" không?`);
-        }
-
-        $('#delete-confirm').modal('show'); // Hiển thị modal
-    });
-
-    $('#confirm-delete').on('click', function() {
-        formToSubmit.submit();
-    });
-});
-</script>
 @endsection

@@ -21,7 +21,7 @@ class RoomsExport implements FromCollection, WithHeadings, WithMapping
             'Mã phòng',
             'Tên phòng',
             'Loại phòng',
-            'Tình trạng phòng',
+            // 'Tình trạng phòng',
             'Ghi chú'
         ];
     }
@@ -32,7 +32,7 @@ class RoomsExport implements FromCollection, WithHeadings, WithMapping
             $room->room_id,
             $room->room_name,
             $room->type->type_name,
-            $room->status->status_name,
+            // $room->status->status_name,
             $room->room_note
         ];
     }

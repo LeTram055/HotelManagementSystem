@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Rooms;
 use App\Models\Types;
 use App\Models\RoomStatuses;
+use App\Models\Reservations;
 
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\RoomsExport;
@@ -15,44 +16,139 @@ use App\Exports\RoomsExport;
 
 class RoomController extends Controller
 {
-    public function index(Request $request) {
-        $sortField = $request->input('sort_field', 'room_id'); // Mặc định sắp xếp theo room_id
-        $sortDirection = $request->input('sort_direction', 'asc'); // Mặc định sắp xếp tăng dần
 
-        //$query = Rooms::query();
+    public function index(Request $request)
 
-        $query = Rooms::join('types', 'rooms.type_id', '=', 'types.type_id')
-            ->join('room_statuses', 'rooms.status_id', '=', 'room_statuses.status_id')
-            ->select('rooms.*', 'types.type_name', 'room_statuses.status_name');
+    {
 
-        if ($request->filled('search')) {
-            $searchTerm = $request->input('search');
-            
-            $query->where('room_id', 'like', '%' . $searchTerm . '%')
-                ->orWhere(function ($q) use ($searchTerm) {
-                $q->where('room_name', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('type_name', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('status_name', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('room_note', 'like', '%' . $searchTerm . '%');
-                });
+        $request->validate([
+        
+        'end_date' => 'after_or_equal:start_date', // Kiểm tra end_date >= start_date
+    ], [
+        
+        'end_date' => 'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu.',
+    ]);
+
+        // Nhận dữ liệu từ form
+        $startDate = $request->input('start_date', now()->toDateString());
+        $endDate = $request->input('end_date', now()->toDateString());
+        $roomType = $request->input('room_type', ''); // Lọc theo loại phòng
+        $roomStatus = $request->input('room_status', ''); // Lọc theo trạng thái phòng
+        $searchTerm = $request->input('search', ''); // Tìm kiếm theo tên phòng
+        
+        // Query tất cả các phòng
+        $rooms = Rooms::with('type', 'status');
+
+        // Lọc theo loại phòng
+        if ($roomType) {
+            $rooms->where('type_id', $roomType);
         }
 
-        if (in_array($sortField, ['type_name', 'room_name', 'status_name'])) {
-            $query->orderByRaw("CONVERT($sortField USING utf8) COLLATE utf8_unicode_ci $sortDirection");
-        } elseif ($sortField == 'room_id') {
-            // Sắp xếp giá theo kiểu số
-            $query->orderByRaw("CAST($sortField AS DECIMAL) $sortDirection");
-        } 
-        else {
-            $query->orderByRaw("CONVERT(room_id USING utf8) COLLATE utf8_unicode_ci asc");
+        
+        // Tìm kiếm theo tên phòng
+        if ($searchTerm) {
+            $rooms->where('room_name', 'like', '%' . $searchTerm . '%');
         }
 
-        $rooms = $query->get();
-        return view('admin.room.index')
-        ->with('rooms', $rooms)
-        ->with('sortField', $sortField)
-        ->with('sortDirection', $sortDirection);
+        $rooms = $rooms->get();
+
+    
+        // Query các đơn đặt phòng trong khoảng thời gian
+        $reservations = Reservations::where(function ($query) use ($startDate, $endDate) {
+            if ($startDate === $endDate) {
+        // Kiểm tra xem start_date có nằm trong khoảng checkin và checkout của đơn đặt phòng không
+        $query->where(function($q) use ($startDate) {
+            $q->where('reservation_checkin', '<=', $startDate)
+              ->where('reservation_checkout', '>=', $startDate);
+        });
+    } else {
+        // Nếu ngày bắt đầu và ngày kết thúc khác nhau, sử dụng whereBetween như bình thường
+        $query->whereBetween('reservation_checkin', [$startDate, $endDate])
+              ->orWhereBetween('reservation_checkout', [$startDate, $endDate]);
     }
+        })->get();
+
+        // Duyệt qua từng phòng và xác định trạng thái
+        $roomStatuses = [];
+        foreach ($rooms as $room) {
+            $roomStatusF = 'Trống'; // Mặc định
+
+            $foundInReservation = false;
+            foreach ($reservations as $reservation) {
+                if ($reservation->rooms->contains('room_id', $room->room_id)) {
+                    $foundInReservation = true;
+                    if ($reservation->reservation_status === 'Đã nhận phòng') {
+                        $roomStatusF = 'Đang sử dụng';
+                    } elseif ($reservation->reservation_status === 'Đã xác nhận') {
+                        $roomStatusF = 'Đã đặt';
+                    } elseif ($reservation->reservation_status === 'Đã trả phòng') {
+                        $roomStatusF = 'Trống';
+                    }
+                    break;
+                }
+            }
+
+            if (!$foundInReservation) {
+                 //$roomStatus = 'Tất cả';
+            $roomStatusF = $room->status->status_name === 'Đang sửa' ? 'Đang sửa' : 'Trống';
+        }
+
+            $roomStatuses[$room->room_id] = $roomStatusF;
+        }
+
+        // Lọc theo trạng thái phòng
+        if ($roomStatus) {
+            $rooms = $rooms->filter(function ($room) use ($roomStatus, $roomStatuses) {
+                return $roomStatuses[$room->room_id] === $roomStatus;
+            });
+        }
+
+        $roomTypes = Types::all();
+        // Trả về view với dữ liệu
+        return view('admin.room.index', compact('rooms', 'roomStatuses', 'startDate', 'endDate', 'roomType', 'roomStatus', 'roomTypes'));
+    }
+
+
+
+
+    // public function index(Request $request) {
+    //     $sortField = $request->input('sort_field', 'room_id'); // Mặc định sắp xếp theo room_id
+    //     $sortDirection = $request->input('sort_direction', 'asc'); // Mặc định sắp xếp tăng dần
+        
+    //     //$query = Rooms::query();
+
+    //     $query = Rooms::join('types', 'rooms.type_id', '=', 'types.type_id')
+    //         ->join('room_statuses', 'rooms.status_id', '=', 'room_statuses.status_id')
+    //         ->select('rooms.*', 'types.type_name', 'room_statuses.status_name');
+
+    //     if ($request->filled('search')) {
+    //         $searchTerm = $request->input('search');
+            
+    //         $query->where('room_id', 'like', '%' . $searchTerm . '%')
+    //             ->orWhere(function ($q) use ($searchTerm) {
+    //             $q->where('room_name', 'like', '%' . $searchTerm . '%')
+    //                 ->orWhere('type_name', 'like', '%' . $searchTerm . '%')
+    //                 ->orWhere('status_name', 'like', '%' . $searchTerm . '%')
+    //                 ->orWhere('room_note', 'like', '%' . $searchTerm . '%');
+    //             });
+    //     }
+
+    //     if (in_array($sortField, ['type_name', 'room_name', 'status_name'])) {
+    //         $query->orderByRaw("CONVERT($sortField USING utf8) COLLATE utf8_unicode_ci $sortDirection");
+    //     } elseif ($sortField == 'room_id') {
+    //         // Sắp xếp giá theo kiểu số
+    //         $query->orderByRaw("CAST($sortField AS DECIMAL) $sortDirection");
+    //     } 
+    //     else {
+    //         $query->orderByRaw("CONVERT(room_id USING utf8) COLLATE utf8_unicode_ci asc");
+    //     }
+
+    //     $rooms = $query->get();
+    //     return view('admin.room.index')
+    //     ->with('rooms', $rooms)
+    //     ->with('sortField', $sortField)
+    //     ->with('sortDirection', $sortDirection);
+    // }
 
     public function create()
     {
