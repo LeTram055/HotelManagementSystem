@@ -113,6 +113,7 @@
                     Tổng quan
                 </a>
             </li>
+
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('admin/account*') ? 'active' : '' }}"
                     href="{{ route('admin.account.index') }}">
@@ -120,29 +121,94 @@
                     Tài khoản
                 </a>
             </li>
+
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('admin/customer*') ? 'active' : '' }}"
+                <a class="nav-link {{ request()->is('admin/customer*') ? 'active' : '' }} "
                     href="{{ route('admin.customer.index') }}">
                     <i class="fa-solid fa-address-book"></i>&nbsp;
                     Khách hàng
                 </a>
             </li>
+
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('admin/employee*') ? 'active' : '' }}"
+                <a class="nav-link {{ request()->is('admin/employee*') ? 'active' : '' }} "
                     href="{{ route('admin.employee.index') }}">
                     <i class="fa-solid fa-users"></i>&nbsp;
                     Nhân viên
                 </a>
             </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('admin/roomstatus*') ? 'active' : '' }}"
+                    href="{{ route('admin.roomstatus.index') }}">
+                    <i class="fa-solid fa-sliders"></i>&nbsp;
+                    Trạng thái phòng
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('admin/facility*') ? 'active' : '' }}"
+                    href="{{ route('admin.facility.index') }}">
+                    <i class="fa-solid fa-door-closed"></i>&nbsp;
+                    Thiết bị
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('admin/typeimage*') ? 'active' : '' }}"
+                    href="{{ route('admin.typeimage.index') }}">
+                    <i class="fa-solid fa-image"></i>&nbsp;
+                    Ảnh loại phòng
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('admin/type*') && !request()->is('admin/typeimage*')? 'active' : '' }}"
+                    href="{{ route('admin.type.index') }}">
+                    <i class="fa-solid fa-list"></i>&nbsp;
+                    Loại phòng
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('admin/room*') && !request()->is('admin/roomstatus*')? 'active' : '' }}"
+                    href="{{ route('admin.room.index') }}">
+                    <i class="fa-solid fa-door-closed"></i>&nbsp;
+                    Phòng
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('admin/reservation*') ? 'active' : '' }}"
+                    href="{{ route('admin.reservation.index') }}">
+                    <i class="fa-solid fa-calendar"></i>&nbsp;
+                    Đơn đặt phòng
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('admin/payment*') ? 'active' : '' }}"
+                    href="{{ route('admin.payment.index') }}">
+                    <i class="fa-solid fa-money-check-alt"></i>&nbsp;
+                    Thanh toán
+                </a>
+            </li>
             @endif
 
-            {{-- Hiển thị chung cho Admin và Employee --}}
-            @if(in_array(Auth::user()->account_role, ['admin', 'employee']))
+            {{-- Hiển thị chung cho Employee --}}
+            @if(Auth::user()->account_role === 'employee')
+
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('admin/dashboard*') ? 'active' : '' }}"
-                    href="{{ route('admin.dashboard') }}">
+                    href="{{ route('admin.dashboard_employee') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>&nbsp;
                     Tổng quan
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('admin/customer*') ? 'active' : '' }} "
+                    href="{{ route('admin.customer.index') }}">
+                    <i class="fa-solid fa-address-book"></i>&nbsp;
+                    Khách hàng
                 </a>
             </li>
             <li class="nav-item">

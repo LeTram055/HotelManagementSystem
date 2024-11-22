@@ -18,6 +18,7 @@ use App\Http\Middleware\RoleMiddleware;
 
 
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
+Route::get('/admin', [AuthController::class, 'showLoginForm'])->name('login');
 
 //admin..............................................
 
@@ -25,16 +26,16 @@ Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::get('/password/change', [AuthController::class, 'showChangePasswordForm'])->name('password.change');
-Route::post('/password/change', [AuthController::class, 'changePassword'])->name('password.update');
+Route::get('/password/change', [AuthController::class, 'showChangePasswordForm'])->name('password.change')->middleware('auth');
+Route::post('/password/change', [AuthController::class, 'changePassword'])->name('password.update')->middleware('auth');
 
 //dashboard
 Route::get('admin/dashboard',
  [DashboardController::class, 'index'])
- ->name('admin.dashboard');
+ ->name('admin.dashboard')->middleware('auth', 'role:admin');
 Route::get('admin/dashboard_employee',
  [DashboardController::class, 'index_employee'])
- ->name('admin.dashboard_employee');
+ ->name('admin.dashboard_employee')->middleware('auth', 'role:employee|admin');
 
 //roomstatus
 Route::middleware(['auth', 'role:admin'])->group(function () {

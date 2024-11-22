@@ -103,12 +103,12 @@ Quản lý khách hàng
                     <div class="d-flex justify-content-center">
                         <a href="{{ route('admin.customer.edit', ['customer_id' => $customer->customer_id]) }}"
                             class="btn btn-warning btn-sm">Sửa</a>
-                        <form class="mx-1" name=frmDelete method="post" action="{{ route('admin.customer.delete') }}">
+                        <!-- <form class="mx-1" name=frmDelete method="post" action="{{ route('admin.customer.delete') }}">
                             @csrf
                             <input type="hidden" name="customer_id" value="{{ $customer->customer_id }}">
                             <button customer="submit"
                                 class="btn btn-danger btn-sm btn-sm delete-customer-btn">Xóa</button>
-                        </form>
+                        </form> -->
                     </div>
 
                 </td>
@@ -123,7 +123,7 @@ Quản lý khách hàng
     </table>
 </div>
 
-<!-- Modal -->
+<!-- Modal
 <div class="modal fade" id="delete-confirm" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -141,9 +141,9 @@ Quản lý khách hàng
             </div>
         </div>
     </div>
-</div>
+</div> -->
 @endsection
-
+<!-- 
 @section('custom-scripts')
 <script>
 $(document).ready(function() {
@@ -167,4 +167,4 @@ $(document).ready(function() {
     });
 });
 </script>
-@endsection
+@endsection -->

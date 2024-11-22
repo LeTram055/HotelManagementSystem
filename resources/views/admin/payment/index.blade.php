@@ -107,11 +107,11 @@ Quản lý thanh toán
                     <div class="d-flex justify-content-center">
                         <a href="{{ route('admin.payment.edit', ['payment_id' => $payment->payment_id]) }}"
                             class="btn btn-warning btn-sm">Sửa</a>
-                        <form class="mx-1" name=frmDelete method="post" action="{{ route('admin.payment.delete') }}">
+                        <!-- <form class="mx-1" name=frmDelete method="post" action="{{ route('admin.payment.delete') }}">
                             @csrf
                             <input type="hidden" name="payment_id" value="{{ $payment->payment_id }}">
                             <button type="submit" class="btn btn-danger btn-sm delete-payment-btn">Xóa</button>
-                        </form>
+                        </form> -->
                     </div>
                 </td>
             </tr>
@@ -120,7 +120,7 @@ Quản lý thanh toán
     </table>
 </div>
 
-<!-- Modal xác nhận xóa -->
+<!-- Modal xác nhận xóa
 <div class="modal fade" id="delete-confirm" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -137,10 +137,10 @@ Quản lý thanh toán
             </div>
         </div>
     </div>
-</div>
+</div> -->
 @endsection
 
-@section('custom-scripts')
+<!-- @section('custom-scripts')
 <script>
 $(document).ready(function() {
     let formToSubmit;
@@ -163,4 +163,4 @@ $(document).ready(function() {
     });
 });
 </script>
-@endsection
+@endsection -->
