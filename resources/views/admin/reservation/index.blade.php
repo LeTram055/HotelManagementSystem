@@ -113,7 +113,7 @@ Quản lý đặt phòng
             </tr>
         </thead>
         <tbody>
-            @foreach ($reservations as $reservation)
+            @foreach ($reservations->unique('reservation_id') as $reservation)
             <tr>
                 <td class="text-center">{{ $reservation->reservation_id }}</td>
                 <td>{{ $reservation->customer->customer_name }}</td>
@@ -136,13 +136,13 @@ Quản lý đặt phòng
                     <div class="d-flex justify-content-center">
                         <a href="{{ route('admin.reservation.edit', ['reservation_id' => $reservation->reservation_id]) }}"
                             class="btn btn-warning btn-sm">Sửa</a>
-                        <form class="mx-1" name=frmDelete method="post"
+                        <!-- <form class="mx-1" name=frmDelete method="post"
                             action="{{ route('admin.reservation.delete') }}">
                             @csrf
                             <input type="hidden" name="reservation_id" value="{{ $reservation->reservation_id }}">
                             <button reservation="submit"
                                 class="btn btn-danger btn-sm btn-sm delete-reservation-btn">Xóa</button>
-                        </form>
+                        </form> -->
                     </div>
 
                 </td>
@@ -152,7 +152,7 @@ Quản lý đặt phòng
     </table>
 </div>
 
-<!-- Modal -->
+<!-- Modal
 <div class="modal fade" id="delete-confirm" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -170,9 +170,9 @@ Quản lý đặt phòng
             </div>
         </div>
     </div>
-</div>
+</div> -->
 @endsection
-
+<!-- 
 @section('custom-scripts')
 <script>
 $(document).ready(function() {
@@ -196,4 +196,4 @@ $(document).ready(function() {
     });
 });
 </script>
-@endsection
+@endsection -->

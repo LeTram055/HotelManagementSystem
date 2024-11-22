@@ -161,7 +161,7 @@ class ReservationController extends Controller
     public function update(Request $request)
     {
         // Validate dữ liệu
-        $validatedData = $request->validate([
+        $request->validate([
         'room_ids' => 'required|array', 
         'room_ids.*' => 'exists:rooms,room_id',
         ],[
