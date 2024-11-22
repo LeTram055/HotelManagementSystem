@@ -16,6 +16,16 @@ body {
     color: white;
     font-weight: 600;
 }
+
+.navbar .dropdown-menu {
+    position: absolute; /* Đảm bảo dropdown không ảnh hưởng đến chiều cao của navbar */
+    top: 50px; /* Điều chỉnh sao cho dropdown mở dưới navbar */
+}
+
+/* Thêm một chút margin-top để không bị tràn khi mở */
+.navbar-nav {
+    position: relative;
+}
 /*sidebar*/
 .sidebar {
     height: 100vh;

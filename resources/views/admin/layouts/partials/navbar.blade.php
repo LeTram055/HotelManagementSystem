@@ -12,9 +12,45 @@
 
     <!-- <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Ánh Dương Hotel</a> -->
     <ul class="navbar-nav px-3 ml-auto">
-        <li class="nav-item">
-            <a class="nav-link" href="#">Sign out</a>
+        @if(Auth::check())
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Xin chào, {{ Auth::user()->account_username }}
+            </a>
+
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="{{ route('password.change') }}">Đổi mật khẩu</a></li>
+                <li>
+                    <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="dropdown-item">Đăng xuất</button>
+                    </form>
+                </li>
+            </ul>
         </li>
+        <!-- Kiểm tra người dùng đã đăng nhập hay chưa -->
+        <!-- <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                {{ Auth::user()->account_username }}
+            </a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ route('password.change') }}">Đổi mật khẩu</a></li>
+                
+                <li>
+                    <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="dropdown-item">Sign out</button>
+                    </form>
+                </li>
+            </ul>
+        </li> -->
+        @else
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('login') }}">Đăng nhập</a>
+        </li>
+        @endif
     </ul>
 </nav>
 

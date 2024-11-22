@@ -12,21 +12,32 @@ use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\ReservationController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\AuthController;
+use App\Http\Middleware\RoleMiddleware;
 
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
 
 //admin..............................................
+
+//login
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/password/change', [AuthController::class, 'showChangePasswordForm'])->name('password.change');
+Route::post('/password/change', [AuthController::class, 'changePassword'])->name('password.update');
 
 //dashboard
 Route::get('admin/dashboard',
  [DashboardController::class, 'index'])
  ->name('admin.dashboard');
+Route::get('admin/dashboard_employee',
+ [DashboardController::class, 'index_employee'])
+ ->name('admin.dashboard_employee');
 
 //roomstatus
+Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::get('/admin/roomstatus', 
 [RoomStatusController::class, 'index'])
     ->name('admin.roomstatus.index');
@@ -114,35 +125,6 @@ Route::get('admin/type/export',
 ->name('admin.type.export');
 
 
-//room
-Route::get('/admin/room', 
-[RoomController::class, 'index'])
-    ->name('admin.room.index');
-
-Route::get('/admin/room/create', 
-[RoomController::class, 'create'])
-    ->name('admin.room.create');
-
-Route::post('admin/room/save',
-[RoomController::class, 'save'])
-->name('admin.room.save');
-
-Route::get('/admin/room/edit', 
-[RoomController::class, 'edit'])
-    ->name('admin.room.edit');
-
-Route::post('admin/room/update',
-[RoomController::class, 'update'])
-->name('admin.room.update');
-
-Route::post('/admin/room/delete', 
-[RoomController::class, 'destroy'])
-->name('admin.room.delete');
-
-Route::get('admin/room/export', 
-[RoomController::class, 'exportExcel'])
-->name('admin.room.export');
-
 //TypeImages
 Route::get('/admin/typeimage', 
 [TypeImageController::class, 'index'])
@@ -171,35 +153,6 @@ Route::post('/admin/typeimage/delete',
 Route::get('admin/typeimage/export', 
 [TypeImageController::class, 'exportExcel'])
 ->name('admin.typeimage.export');
-
-//customer
-Route::get('/admin/customer', 
-[CustomerController::class, 'index'])
-    ->name('admin.customer.index');
-
-Route::get('/admin/customer/create', 
-[CustomerController::class, 'create'])
-    ->name('admin.customer.create');
-
-Route::post('admin/customer/save',
-[CustomerController::class, 'save'])
-->name('admin.customer.save');
-
-Route::get('/admin/customer/edit', 
-[CustomerController::class, 'edit'])
-    ->name('admin.customer.edit');
-
-Route::post('admin/customer/update',
-[CustomerController::class, 'update'])
-->name('admin.customer.update');
-
-Route::post('/admin/customer/delete', 
-[CustomerController::class, 'destroy'])
-->name('admin.customer.delete');
-
-Route::get('admin/customer/export', 
-[CustomerController::class, 'exportExcel'])
-->name('admin.customer.export');
 
 //employee
 Route::get('/admin/employee', 
@@ -259,6 +212,69 @@ Route::post('/admin/account/delete',
 Route::get('admin/account/export', 
 [AccountController::class, 'exportExcel'])
 ->name('admin.account.export');
+});
+
+Route::middleware(['auth', 'role:admin|employee'])->group(function () {
+//customer
+Route::get('/admin/customer', 
+[CustomerController::class, 'index'])
+    ->name('admin.customer.index');
+
+Route::get('/admin/customer/create', 
+[CustomerController::class, 'create'])
+    ->name('admin.customer.create');
+
+Route::post('admin/customer/save',
+[CustomerController::class, 'save'])
+->name('admin.customer.save');
+
+Route::get('/admin/customer/edit', 
+[CustomerController::class, 'edit'])
+    ->name('admin.customer.edit');
+
+Route::post('admin/customer/update',
+[CustomerController::class, 'update'])
+->name('admin.customer.update');
+
+Route::post('/admin/customer/delete', 
+[CustomerController::class, 'destroy'])
+->name('admin.customer.delete');
+
+Route::get('admin/customer/export', 
+[CustomerController::class, 'exportExcel'])
+->name('admin.customer.export');
+
+
+//room
+Route::get('/admin/room', 
+[RoomController::class, 'index'])
+    ->name('admin.room.index');
+
+Route::get('/admin/room/create', 
+[RoomController::class, 'create'])
+    ->name('admin.room.create');
+
+Route::post('admin/room/save',
+[RoomController::class, 'save'])
+->name('admin.room.save');
+
+Route::get('/admin/room/edit', 
+[RoomController::class, 'edit'])
+    ->name('admin.room.edit');
+
+Route::post('admin/room/update',
+[RoomController::class, 'update'])
+->name('admin.room.update');
+
+Route::post('/admin/room/delete', 
+[RoomController::class, 'destroy'])
+->name('admin.room.delete');
+
+Route::get('admin/room/export', 
+[RoomController::class, 'exportExcel'])
+->name('admin.room.export');
+
+
 
 //reservation
 Route::get('/admin/reservation', 
@@ -321,7 +337,7 @@ Route::post('/admin/payment/delete',
 Route::get('admin/payment/export', 
 [PaymentController::class, 'exportExcel'])
 ->name('admin.payment.export');
-
+});
 
 //client..............................................
 // routes/web.php
