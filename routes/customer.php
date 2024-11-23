@@ -3,7 +3,7 @@
     use App\Http\Controllers\Customer\TypeController;
     use App\Http\Controllers\Customer\CustomerController;
     use App\Http\Controllers\Customer\ReservationController;
-
+    
 //loai phong
 Route::get('customer/types', [TypeController::class, 'index']);
 Route::get('customer/types/{id}', [TypeController::class, 'show']);
@@ -16,3 +16,6 @@ Route::get('customer/getuserbyusername/{username}', [CustomerController::class, 
 //dat phong
 Route::get('customer/available-room-types', [ReservationController::class, 'getAvailableRoomTypes']);
 Route::post('customer/reservations', [ReservationController::class, 'createReservation']);
+Route::get('customer/reservations/{customer_id}', [ReservationController::class, 'getCustomerReservations']);
+Route::delete('customer/reservations/{id}/cancel', [ReservationController::class, 'cancelReservation']);
+Route::get('customer/rooms', [ReservationController::class, 'getRoomsDetails']);
