@@ -67,28 +67,28 @@ class RoomController extends Controller
               ->orWhereBetween('reservation_checkout', [$startDate, $endDate]);
     }
         })->get();
-
+        
         // Duyệt qua từng phòng và xác định trạng thái
         $roomStatuses = [];
         foreach ($rooms as $room) {
             $roomStatusF = 'Trống'; // Mặc định
 
+            $foundInReservation = false;
             foreach ($reservations as $reservation) {
                 if ($reservation->rooms->contains('room_id', $room->room_id)) {
+                    $foundInReservation = true;
                     
                     if ($reservation->reservation_status === 'Đã nhận phòng') {
                         $roomStatusF = 'Đang sử dụng';
                         break;
                     } elseif ($reservation->reservation_status === 'Đã xác nhận') {
                         $roomStatusF = 'Đã đặt';
-                    } elseif ($reservation->reservation_status === 'Đã trả phòng') {
-                        $roomStatusF = $roomStatusF === 'Đang sử dụng' || $roomStatusF === 'Đã đặt' ? $roomStatusF : 'Trống';
                     }
                     
                 }
             }
 
-            if ($reservations->isEmpty()) {
+            if (!$foundInReservation) {
                 $roomStatusF = $room->status->status_name === 'Đang sửa' ? 'Đang sửa' : 'Trống';
             }
 
