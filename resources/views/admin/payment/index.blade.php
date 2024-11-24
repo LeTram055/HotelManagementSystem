@@ -107,11 +107,12 @@ Quản lý thanh toán
                     <div class="d-flex justify-content-center">
                         <a href="{{ route('admin.payment.edit', ['payment_id' => $payment->payment_id]) }}"
                             class="btn btn-warning btn-sm">Sửa</a>
-                        <!-- <form class="mx-1" name=frmDelete method="post" action="{{ route('admin.payment.delete') }}">
-                            @csrf
-                            <input type="hidden" name="payment_id" value="{{ $payment->payment_id }}">
-                            <button type="submit" class="btn btn-danger btn-sm delete-payment-btn">Xóa</button>
-                        </form> -->
+                        <a href="{{ route('admin.payment.invoice', ['id' => $payment->payment_id]) }}"
+                            class="btn btn-info btn-sm mx-1" target="_blank">
+                            Xuất hóa đơn
+                        </a>
+
+
                     </div>
                 </td>
             </tr>
@@ -120,47 +121,4 @@ Quản lý thanh toán
     </table>
 </div>
 
-<!-- Modal xác nhận xóa
-<div class="modal fade" id="delete-confirm" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteConfirmLabel">Xác nhận xóa</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-danger" id="confirm-delete">Xóa</button>
-            </div>
-        </div>
-    </div>
-</div> -->
 @endsection
-
-<!-- @section('custom-scripts')
-<script>
-$(document).ready(function() {
-    let formToSubmit;
-
-    $('.delete-payment-btn').on('click', function(e) {
-        e.preventDefault();
-
-        formToSubmit = $(this).closest('form');
-        const paymentId = $(this).closest('tr').find('td').eq(0).text();
-
-        if (paymentId.length > 0) {
-            $('.modal-body').html(`Bạn có muốn xóa thanh toán mã "${paymentId}" không?`);
-        }
-
-        $('#delete-confirm').modal('show'); // Hiển thị modal
-    });
-
-    $('#confirm-delete').on('click', function() {
-        formToSubmit.submit();
-    });
-});
-</script>
-@endsection -->

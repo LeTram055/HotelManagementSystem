@@ -8,9 +8,11 @@ use Illuminate\Http\Request;
 use App\Models\Payments;
 use App\Models\Employees;
 use App\Models\Reservations;
+use App\Models\RoomReservation;
 
 use App\Exports\PaymentsExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 class PaymentController extends Controller
 {
@@ -73,7 +75,7 @@ class PaymentController extends Controller
     public function save(Request $request)
     {
         $request->validate([
-        'payment_id' => 'required|exists:payments,payment_id',
+        'reservation_id' => 'required|exists:reservations,reservation_id',
         'employee_id' => 'required|exists:employees,employee_id',
         'payment_method' => 'required|string|max:50',
     ], [
@@ -82,6 +84,8 @@ class PaymentController extends Controller
         'payment_method.required' => 'Phương thức thanh toán không được để trống',
         'payment_method.string' => 'Phương thức thanh toán phải là chuỗi ký tự',
         'payment_method.max' => 'Phương thức thanh toán không được vượt quá 50 ký tự',
+        'reservation_id.required' => 'Đặt phòng không được để trống',
+        'reservation_id.exists' => 'Đặt phòng không tồn tại',
     ]);
         
 
@@ -109,20 +113,31 @@ class PaymentController extends Controller
         $payment->payment_method = $request->payment_method;
         $payment->save();
 
-        // Cập nhật trạng thái đặt phòng thành "Đã trả"
+        // Cập nhật trạng thái đặt phòng thành "Đã trả phòng"
         $reservation->reservation_status = 'Đã trả phòng';
         $reservation->save();
 
-        // Cập nhật trạng thái các phòng thành "Trống"
-        foreach ($rooms as $room) {
-            $room->update(['status_id' => 1]); 
-        }
+// Cập nhật trạng thái phòng
+    foreach ($rooms as $room) {
+        // Kiểm tra nếu phòng này đã được xác nhận trong các đơn đặt phòng khác
+        $otherReservations = RoomReservation::where('room_id', $room->room_id)
+            ->whereHas('reservation', function ($query) {
+                $query->where('reservation_status', 'Đã xác nhận');
+            })
+            ->exists();
 
-        // Điều hướng sau khi lưu thành công
-        Session::flash('alert-info', 'Thêm mới thành công !!!');
-        return redirect()->route('admin.payment.index');
-        
+        // Nếu có đơn đặt phòng xác nhận và chưa nhận phòng thì phòng này sẽ được "Đã đặt"
+        if ($otherReservations) {
+            $room->update(['status_id' => 3]); // Phòng đã đặt
+        } else {
+            $room->update(['status_id' => 1]); // Phòng trống
+        }
     }
+
+    // Điều hướng sau khi lưu thành công
+    Session::flash('alert-info', 'Thêm mới thành công và cập nhật trạng thái phòng !!!');
+    return redirect()->route('admin.payment.index');
+}
 
     public function edit(Request $request)
     {
@@ -173,4 +188,25 @@ class PaymentController extends Controller
     {
         return Excel::download(new PaymentsExport, 'payments.xlsx');
     }
+
+    public function exportInvoice($payment_id)
+    {
+        $payment = Payments::with(['employee', 'reservation.customer'])->findOrFail($payment_id);
+
+        // Tạo dữ liệu cho hóa đơn
+        $invoiceData = [
+            'payment' => $payment,
+            'customer' => $payment->reservation->customer,
+            'employee' => $payment->employee,
+            'formatted_price' => number_format($payment->payment_price, 0, ',', '.'),
+            
+        ];
+
+        // Tải view hóa đơn
+        $pdf = PDF::loadView('admin.payment.invoice', $invoiceData);
+
+        // Xuất file PDF
+        return $pdf->download('invoice_' . $payment->payment_id . '.pdf');
+    }
+
 }

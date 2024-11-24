@@ -338,7 +338,14 @@ Route::post('/admin/payment/delete',
 Route::get('admin/payment/export', 
 [PaymentController::class, 'exportExcel'])
 ->name('admin.payment.export');
+
+
+Route::get('admin/payment/invoice/{id}', 
+[PaymentController::class, 'exportInvoice'])
+->name('admin.payment.invoice');
+
 });
+
 
 //client..............................................
 // routes/web.php

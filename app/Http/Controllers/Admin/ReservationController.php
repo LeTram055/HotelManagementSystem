@@ -212,7 +212,18 @@ class ReservationController extends Controller
                 $room->update(['status_id' => 2]); // Phòng đang sử dụng
             }
             if ($request->reservation_status == 'Checked-out') {
-                $room->update(['status_id' => 1]); // Phòng trống
+                $otherReservations = RoomReservation::where('room_id', $room->room_id)
+                    ->whereHas('reservation', function ($query) {
+                        $query->where('reservation_status', 'Đã xác nhận');
+                    })
+                    ->exists();
+
+                // Nếu có đơn đặt phòng xác nhận và chưa nhận phòng thì phòng này sẽ được "Đã đặt"
+                if (!$otherReservations) {
+                    $room->update(['status_id' => 3]); // Phòng đã đặt
+                } else {
+                    $room->update(['status_id' => 1]); // Phòng trống
+                }
             }
 
             if ($request->reservation_status == 'Cancelled') {
