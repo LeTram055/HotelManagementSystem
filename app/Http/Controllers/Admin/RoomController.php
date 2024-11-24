@@ -73,25 +73,24 @@ class RoomController extends Controller
         foreach ($rooms as $room) {
             $roomStatusF = 'Trống'; // Mặc định
 
-            $foundInReservation = false;
             foreach ($reservations as $reservation) {
                 if ($reservation->rooms->contains('room_id', $room->room_id)) {
-                    $foundInReservation = true;
+                    
                     if ($reservation->reservation_status === 'Đã nhận phòng') {
                         $roomStatusF = 'Đang sử dụng';
+                        break;
                     } elseif ($reservation->reservation_status === 'Đã xác nhận') {
                         $roomStatusF = 'Đã đặt';
                     } elseif ($reservation->reservation_status === 'Đã trả phòng') {
-                        $roomStatusF = 'Trống';
+                        $roomStatusF = $roomStatusF === 'Đang sử dụng' || $roomStatusF === 'Đã đặt' ? $roomStatusF : 'Trống';
                     }
-                    break;
+                    
                 }
             }
 
-            if (!$foundInReservation) {
-                 //$roomStatus = 'Tất cả';
-            $roomStatusF = $room->status->status_name === 'Đang sửa' ? 'Đang sửa' : 'Trống';
-        }
+            if ($reservations->isEmpty()) {
+                $roomStatusF = $room->status->status_name === 'Đang sửa' ? 'Đang sửa' : 'Trống';
+            }
 
             $roomStatuses[$room->room_id] = $roomStatusF;
         }

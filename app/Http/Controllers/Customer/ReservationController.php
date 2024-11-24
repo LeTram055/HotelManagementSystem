@@ -91,21 +91,6 @@ class ReservationController extends Controller
                 $roomReservation->save();
             }
 
-        
-            // // Tạo một giao dịch đặt phòng
-            // $reservation = Reservations::create([
-            //     'customer_id' => $customerId,
-            //     'reservation_date' => now(),
-            //     'reservation_checkin' => $checkin,
-            //     'reservation_checkout' => $checkout,
-            //     'reservation_status' => 'pending', // Trạng thái mặc định
-            // ]);
-
-            // // Gán phòng cho đặt phòng
-            // foreach ($roomIds as $roomId) {
-            //     $reservation->rooms()->attach($roomId);
-            // }
-
             return response()->json([
                 'message' => 'Đặt phòng thành công!',
                 'reservation_id' => $reservation->reservation_id,
@@ -117,15 +102,6 @@ class ReservationController extends Controller
             ], 500);
         }
     }
-
-    // public function getCustomerReservations($customerId)
-    // {
-    //     $reservations = Reservations::with(['rooms', 'rooms.type'])
-    //         ->where('customer_id', $customerId)
-    //         ->get();
-
-    //     return response()->json($reservations);
-    // }
 
     public function getCustomerReservations($customerId)
     {
@@ -143,15 +119,40 @@ class ReservationController extends Controller
     }
 
     public function cancelReservation($id)
-    {
-        $reservation = Reservations::findOrFail($id);
+{
+    $reservation = Reservations::findOrFail($id);
 
-        if ($reservation->reservation_status !== 'Chờ xác nhận') {
-            return response()->json(['message' => 'Không thể hủy đơn đã xử lý'], 400);
-        }
-
-        $reservation->delete(); // Hoặc cập nhật trạng thái thành "Đã hủy"
-        return response()->json(['message' => 'Hủy đơn đặt phòng thành công']);
+    // Kiểm tra trạng thái hiện tại của đơn đặt
+    if ($reservation->reservation_status !== 'Chờ xác nhận') {
+        return response()->json(['message' => 'Không thể hủy đơn đã xử lý'], 400);
     }
+
+    // Cập nhật trạng thái đơn đặt thành "Đã hủy"
+    $reservation->reservation_status = 'Đã hủy';
+    $reservation->save();
+
+    // Cập nhật trạng thái các phòng liên quan
+    $roomReservations = RoomReservation::where('reservation_id', $reservation->reservation_id)->get();
+
+    foreach ($roomReservations as $roomReservation) {
+        $room = Rooms::find($roomReservation->room_id);
+
+        // Kiểm tra các đơn khác có sử dụng phòng này với trạng thái "Đã nhận phòng" hoặc "Đã xác nhận"
+        $otherReservations = RoomReservation::where('room_id', $room->room_id)
+            ->where('reservation_id', '!=', $reservation->reservation_id)
+            ->whereHas('reservation', function ($query) {
+                $query->whereIn('reservation_status', ['Đã nhận phòng', 'Đã xác nhận']);
+            })
+            ->exists();
+
+        if (!$otherReservations) {
+            // Nếu không còn đơn nào liên quan, cập nhật trạng thái phòng về trống
+            $room->update(['status_id' => 1]); // 1: Trạng thái phòng trống
+        }
+    }
+
+    return response()->json(['message' => 'Hủy đơn đặt phòng thành công'], 200);
+}
+
 
 }
