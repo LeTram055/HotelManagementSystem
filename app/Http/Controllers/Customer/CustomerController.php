@@ -13,11 +13,10 @@ class CustomerController extends Controller
     // Đăng ký tài khoản khách hàng
     public function register(Request $request)
     {
-        // Validate input
+        
         // $request->validate( [
         //     'account_username' => 'required|',
-        //     'account_password' => 'required|min:6',
-        //     'account_email' => 'required|email|unique:accounts,account_email',
+        //     'account_password' => 'required|min:8',
         //     'customer_name' => 'required|string',
         //     'customer_cccd' => 'required|string|unique:customers,customer_cccd',
         //     'customer_address' => 'required|string',

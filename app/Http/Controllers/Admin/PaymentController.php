@@ -9,6 +9,7 @@ use App\Models\Payments;
 use App\Models\Employees;
 use App\Models\Reservations;
 use App\Models\RoomReservation;
+use App\Http\Controllers\Admin\NotificationController;
 
 use App\Exports\PaymentsExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -133,6 +134,11 @@ class PaymentController extends Controller
             $room->update(['status_id' => 1]); // Phòng trống
         }
     }
+
+    $notificationController = new NotificationController();
+    $message = "Cảm ơn bạn đã lưu trú tại khách sạn Ánh Dương. Hẹn gặp lại bạn lần sau.";
+    $notificationController->createNotification($reservation->customer_id, $message);
+
 
     // Điều hướng sau khi lưu thành công
     Session::flash('alert-info', 'Thêm mới thành công và cập nhật trạng thái phòng !!!');

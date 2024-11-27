@@ -22,20 +22,44 @@ class ReservationController extends Controller
         $checkin = $request->input('checkin');
         $checkout = $request->input('checkout');
 
-        $availableRooms = Rooms::with('type') // Eager load loại phòng
-            ->where(function ($query) use ($checkin, $checkout) {
-                $query->where('status_id', 1) // Phòng trống
-                    ->orWhere(function ($subQuery) use ($checkin, $checkout) {
-                        $subQuery->whereDoesntHave('reservations', function ($query) use ($checkin, $checkout) {
-                            $query->where(function ($query) use ($checkin, $checkout) {
-                                $query->where('reservation_checkin', '<=', $checkout)
-                                    ->where('reservation_checkout', '>=', $checkin);
-                            });
-                        });
-                    });
-            })
-            ->where('status_id', '!=', 4)
-            ->get();
+        // Lấy tất cả các phòng
+        $rooms = Rooms::with('type', 'status')->get();
+
+        // Lấy danh sách các đơn đặt phòng trong khoảng thời gian
+        $reservations = Reservations::where(function ($query) use ($checkin, $checkout) {
+            if ($checkin === $checkout) {
+        // Kiểm tra xem start_date có nằm trong khoảng checkin và checkout của đơn đặt phòng không
+        $query->where(function($q) use ($checkin) {
+            $q->where('reservation_checkin', '<=', $checkin)
+              ->where('reservation_checkout', '>=', $checkin);
+        });
+    } else {
+        // Nếu ngày bắt đầu và ngày kết thúc khác nhau, sử dụng whereBetween như bình thường
+        $query->whereBetween('reservation_checkin', [$checkin, $checkout])
+              ->orWhereBetween('reservation_checkout', [$checkin, $checkout]);
+    }
+        })->get();
+
+        // Lọc các phòng dựa trên trạng thái và đơn đặt phòng
+        $availableRooms = $rooms->filter(function ($room) use ($reservations) {
+            $isAvailable = true;
+
+            foreach ($reservations as $reservation) {
+                if ($reservation->rooms->contains('room_id', $room->room_id) && $reservation->reservation_status !== 'Đã trả phòng' && $reservation->reservation_status !== 'Đã hủy') {
+                    
+                    $isAvailable = false;
+                    break;
+                    
+                    
+                }
+            }
+
+            if ($room->status->status_name === 'Đang sửa') {
+                $isAvailable = false;
+            }
+
+            return $isAvailable;
+        });
 
         // Nhóm danh sách phòng trống theo loại phòng
         $groupedRooms = $availableRooms->groupBy('type_id')->map(function ($rooms, $typeId) {

@@ -9,12 +9,20 @@ use App\Models\Customers;
 use App\Models\Rooms;
 use App\Models\RoomReservation;
 use App\Models\Types;
+use App\Http\Controllers\Admin\NotificationController;
 
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReservationsExport;
 
 class ReservationController extends Controller
 {
+
+    protected $notificationController;
+
+    public function __construct(NotificationController $notificationController)
+    {
+        $this->notificationController = $notificationController;
+    }
 
     public function index(Request $request)
     {
@@ -71,32 +79,82 @@ class ReservationController extends Controller
         
     }
 
+    // public function getAvailableRooms(Request $request)
+    // {
+    //     $checkin = $request->input('checkin');
+    //     $checkout = $request->input('checkout');
+
+    //     $availableRooms = Rooms::with('type')
+    //         ->where(function ($query) use ($checkin, $checkout) {
+    //             // Tìm tất cả các phòng có trạng thái trống hoặc đã đặt mà không bị chồng chéo thời gian
+    //             $query->where('status_id', 1) // Phòng trống
+    //                 ->orWhere(function ($subQuery) use ($checkin, $checkout) {
+    //                     $subQuery->whereDoesntHave('reservations', function ($query) use ($checkin, $checkout) {
+    //                         $query->where(function ($query) use ($checkin, $checkout) {
+    //                             // Loại trừ các phòng có thời gian đặt chồng lên thời gian mới
+    //                             $query->where(function ($query) use ($checkin, $checkout) {
+    //                                 $query->where('reservation_checkin', '<=', $checkout)
+    //                                     ->where('reservation_checkout', '>=', $checkin);
+    //                             });
+    //                         });
+    //                     });
+    //                 });
+    //         })
+    //         ->where('status_id', '!=', 4)
+    //         ->get();
+
+    //     return response()->json($availableRooms);
+    // }
+
     public function getAvailableRooms(Request $request)
     {
+        
+
         $checkin = $request->input('checkin');
         $checkout = $request->input('checkout');
 
-        $availableRooms = Rooms::with('type') // Eager load loại phòng
-            ->where(function ($query) use ($checkin, $checkout) {
-                // Tìm tất cả các phòng có trạng thái trống hoặc đã đặt mà không bị chồng chéo thời gian
-                $query->where('status_id', 1) // Phòng trống
-                    ->orWhere(function ($subQuery) use ($checkin, $checkout) {
-                        $subQuery->whereDoesntHave('reservations', function ($query) use ($checkin, $checkout) {
-                            $query->where(function ($query) use ($checkin, $checkout) {
-                                // Loại trừ các phòng có thời gian đặt chồng lên thời gian mới
-                                $query->where(function ($query) use ($checkin, $checkout) {
-                                    $query->where('reservation_checkin', '<=', $checkout)
-                                        ->where('reservation_checkout', '>=', $checkin);
-                                });
-                            });
-                        });
-                    });
-            })
-            ->where('status_id', '!=', 4)
-            ->get();
+        // Lấy tất cả các phòng
+        $rooms = Rooms::with('type', 'status')->get();
 
-        return response()->json($availableRooms);
+        // Lấy danh sách các đơn đặt phòng trong khoảng thời gian
+        $reservations = Reservations::where(function ($query) use ($checkin, $checkout) {
+            if ($checkin === $checkout) {
+        // Kiểm tra xem start_date có nằm trong khoảng checkin và checkout của đơn đặt phòng không
+        $query->where(function($q) use ($checkin) {
+            $q->where('reservation_checkin', '<=', $checkin)
+              ->where('reservation_checkout', '>=', $checkin);
+        });
+    } else {
+        // Nếu ngày bắt đầu và ngày kết thúc khác nhau, sử dụng whereBetween như bình thường
+        $query->whereBetween('reservation_checkin', [$checkin, $checkout])
+              ->orWhereBetween('reservation_checkout', [$checkin, $checkout]);
     }
+        })->get();
+
+        // Lọc các phòng dựa trên trạng thái và đơn đặt phòng
+        $availableRooms = $rooms->filter(function ($room) use ($reservations) {
+            $isAvailable = true;
+
+            foreach ($reservations as $reservation) {
+                if ($reservation->rooms->contains('room_id', $room->room_id) && $reservation->reservation_status !== 'Đã trả phòng' && $reservation->reservation_status !== 'Đã hủy') {
+                    
+                    $isAvailable = false;
+                    break;
+                    
+                    
+                }
+            }
+
+            if ($room->status->status_name === 'Đang sửa') {
+                $isAvailable = false;
+            }
+
+            return $isAvailable;
+        });
+
+        return response()->json($availableRooms->values());
+    }
+
 
     public function save(Request $request)
     {
@@ -107,14 +165,14 @@ class ReservationController extends Controller
         'room_ids' => 'required|array', 
         'room_ids.*' => 'exists:rooms,room_id',
         'reservation_checkin' => 'required|date|after_or_equal:today',
-        'reservation_checkout' => 'required|date|after:reservation_checkin',
+        'reservation_checkout' => 'required|date|after_or_equal:reservation_checkin',
         ],[
         'customer_id.required' => 'Vui lòng chọn khách hàng.',
         'room_ids.required' => 'Vui lòng chọn loại phòng.',
         'reservation_checkin.required' => 'Vui lòng chọn ngày nhận phòng.',
         'reservation_checkin.after_or_equal' => 'Ngày nhận phòng phải từ ngày hôm nay trở đi.',
         'reservation_checkout.required' => 'Vui lòng chọn ngày trả phòng.',
-        'reservation_checkout.after' => 'Ngày trả phòng phải sau ngày nhận phòng.', 
+        'reservation_checkout.after_or_equal' => 'Ngày trả phòng phải sau hoặc bằng ngày nhận phòng.', 
         
         ]);
         
@@ -124,7 +182,7 @@ class ReservationController extends Controller
         $reservation->reservation_date = now();
         $reservation->reservation_checkin = $request->reservation_checkin;
         $reservation->reservation_checkout = $request->reservation_checkout;
-        $reservation->reservation_status = 'Chờ xác nhận';
+        $reservation->reservation_status = 'Đã nhận phòng';
         $reservation->save();
         
         // Lưu thông tin các phòng đã đặt
@@ -134,7 +192,10 @@ class ReservationController extends Controller
             $roomReservation->room_id = (int) $room_id;
             $roomReservation->save();
 
-    }
+        }
+
+        $message = "Đơn đặt phòng thành công từ {$reservation->reservation_checkin} đến {$reservation->reservation_checkout}.";
+        $this->notificationController->createNotification($reservation->customer_id, $message);
         
         Session::flash('alert-info', 'Thêm mới thành công ^^~!!!');
         return redirect()->route('admin.reservation.index');
@@ -241,7 +302,25 @@ class ReservationController extends Controller
             }
         }
             
-        
+        switch ($request->reservation_status) {
+            case 'Confirmed':
+                $message = "Đơn đặt phòng từ {$reservation->reservation_checkin} đến {$reservation->reservation_checkout} đã được chấp nhận.";
+                break;
+
+            case 'Checked-in':
+                $message = "Chào mừng bạn đã đến khách sạn Ánh Dương. Chúc bạn có một trải nghiệm vui vẻ tại khách sạn.";
+                break;
+
+            case 'Checked-out':
+                $message = "Cảm ơn bạn đã lưu trú tại khách sạn Ánh Dương. Hẹn gặp lại bạn lần sau.";
+                break;
+
+            case 'Cancelled':
+                $message = "Đơn đặt phòng từ {$reservation->reservation_checkin} đến {$reservation->reservation_checkout} đã bị hủy.";
+                break;
+        }
+
+        $this->notificationController->createNotification($reservation->customer_id, $message);
 
         Session::flash('alert-info', 'Cập nhật thành công!');
         return redirect()->route('admin.reservation.index');

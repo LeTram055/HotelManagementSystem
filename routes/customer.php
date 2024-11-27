@@ -3,6 +3,7 @@
     use App\Http\Controllers\Customer\TypeController;
     use App\Http\Controllers\Customer\CustomerController;
     use App\Http\Controllers\Customer\ReservationController;
+    use App\Http\Controllers\Customer\NotificationController;
     
 //loai phong
 Route::get('customer/types', [TypeController::class, 'index']);
@@ -19,3 +20,7 @@ Route::post('customer/reservations', [ReservationController::class, 'createReser
 Route::get('customer/reservations/{customer_id}', [ReservationController::class, 'getCustomerReservations']);
 Route::delete('customer/reservations/{id}/cancel', [ReservationController::class, 'cancelReservation']);
 Route::get('customer/rooms', [ReservationController::class, 'getRoomsDetails']);
+
+//thong bao
+Route::post('customer/notifications', [NotificationController::class, 'createNotification']);
+Route::get('customer/notifications/{customer_id}', [NotificationController::class, 'getNotifications']);
