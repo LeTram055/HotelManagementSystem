@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\NotificationController;
 use App\Exports\PaymentsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
@@ -77,11 +78,11 @@ class PaymentController extends Controller
     {
         $request->validate([
         'reservation_id' => 'required|exists:reservations,reservation_id',
-        'employee_id' => 'required|exists:employees,employee_id',
+        //'employee_id' => 'required|exists:employees,employee_id',
         'payment_method' => 'required|string|max:50',
     ], [
-        'employee_id.required' => 'Nhân viên không được để trống',
-        'employee_id.exists' => 'Nhân viên không tồn tại',
+        // 'employee_id.required' => 'Nhân viên không được để trống',
+        // 'employee_id.exists' => 'Nhân viên không tồn tại',
         'payment_method.required' => 'Phương thức thanh toán không được để trống',
         'payment_method.string' => 'Phương thức thanh toán phải là chuỗi ký tự',
         'payment_method.max' => 'Phương thức thanh toán không được vượt quá 50 ký tự',
@@ -107,7 +108,7 @@ class PaymentController extends Controller
 
         // Tạo mới Payment
         $payment = new Payments();
-        $payment->employee_id = $request->employee_id;
+        $payment->employee_id = Auth::user()->employee_id;
         $payment->reservation_id = $request->reservation_id;
         $payment->payment_date = now();
         $payment->payment_price = $totalPrice;
@@ -159,18 +160,18 @@ class PaymentController extends Controller
 {
     $request->validate([
         'payment_id' => 'required|exists:payments,payment_id',
-        'employee_id' => 'required|exists:employees,employee_id',
+        //'employee_id' => 'required|exists:employees,employee_id',
         'payment_method' => 'required|string|max:50',
     ], [
-        'employee_id.required' => 'Nhân viên không được để trống',
-        'employee_id.exists' => 'Nhân viên không tồn tại',
+        //'employee_id.required' => 'Nhân viên không được để trống',
+        //'employee_id.exists' => 'Nhân viên không tồn tại',
         'payment_method.required' => 'Phương thức thanh toán không được để trống',
         'payment_method.string' => 'Phương thức thanh toán phải là chuỗi ký tự',
         'payment_method.max' => 'Phương thức thanh toán không được vượt quá 50 ký tự',
     ]);
 
     $payment = Payments::find($request->payment_id);
-    $payment->employee_id = $request->employee_id;
+    //$payment->employee_id = $request->employee_id;
     $payment->payment_method = $request->payment_method;
     $payment->save();
 

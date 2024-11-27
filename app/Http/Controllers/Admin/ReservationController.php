@@ -27,7 +27,7 @@ class ReservationController extends Controller
     public function index(Request $request)
     {
         $sortField = $request->input('sort_field', 'reservation_id'); // Mặc định sắp xếp theo reservation_id
-        $sortDirection = $request->input('sort_direction', 'asc'); // Mặc định sắp xếp tăng dần
+        $sortDirection = $request->input('sort_direction', 'desc'); // Mặc định sắp xếp tăng dần
 
         $query = Reservations::join('customers', 'reservations.customer_id', '=', 'customers.customer_id')
             ->join('room_reservation', 'reservations.reservation_id', '=', 'room_reservation.reservation_id')

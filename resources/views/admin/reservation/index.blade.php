@@ -34,7 +34,7 @@ Quản lý đặt phòng
 </div>
 
 <div class="table-responsive ">
-    <table class="table table-striped table-sm">
+    <table class="table table-sm">
         <thead>
             <tr>
                 <th class="text-center">
@@ -114,86 +114,64 @@ Quản lý đặt phòng
         </thead>
         <tbody>
             @foreach ($reservations->unique('reservation_id') as $reservation)
-            <tr>
-                <td class="text-center">{{ $reservation->reservation_id }}</td>
-                <td>{{ $reservation->customer->customer_name }}</td>
-                <td>
-                    @foreach ($reservation->rooms as $room)
-                    {{ $room->type->type_name }} <br>
-                    @endforeach
-                </td>
-                <td class="text-center">
-                    @foreach ($reservation->rooms as $room)
-                    {{ $room->room_name }} <br>
-                    @endforeach
-                </td>
 
-                <td class="text-center">{{ $reservation->reservation_date }}</td>
-                <td class="text-center">{{ $reservation->reservation_checkin }}</td>
-                <td class="text-center">{{ $reservation->reservation_checkout }}</td>
-                <td class="text-center">{{ $reservation->reservation_status }}</td>
-                <td>
-                    <div class="d-flex justify-content-center">
-                        <a href="{{ route('admin.reservation.edit', ['reservation_id' => $reservation->reservation_id]) }}"
-                            class="btn btn-warning btn-sm">Sửa</a>
-                        <!-- <form class="mx-1" name=frmDelete method="post"
-                            action="{{ route('admin.reservation.delete') }}">
-                            @csrf
-                            <input type="hidden" name="reservation_id" value="{{ $reservation->reservation_id }}">
-                            <button reservation="submit"
-                                class="btn btn-danger btn-sm btn-sm delete-reservation-btn">Xóa</button>
-                        </form> -->
-                    </div>
+            @php
 
-                </td>
-            </tr>
-            @endforeach
+            $rowClass = '';
+            $today = now()->toDateString();
+
+            if ($reservation->reservation_status === 'Chờ xác nhận')
+            {
+            $rowClass = 'table-info';
+            }
+
+            if ($reservation->reservation_checkin >= $today && $reservation->reservation_status === 'Đã xác nhận')
+            {
+            $rowClass='table-success';
+            }
+
+            if ($reservation->reservation_checkout <= $today) { if ($reservation->reservation_status === 'Đã xác nhận')
+                {
+                $rowClass='table-danger';
+                }
+                elseif ($reservation->reservation_status === 'Đã nhận phòng')
+                { $rowClass='table-warning' ;
+                }
+
+                }
+
+                @endphp
+
+
+                <tr class="{{ $rowClass }}">
+                    <td class="text-center">{{ $reservation->reservation_id }}</td>
+                    <td>{{ $reservation->customer->customer_name }}</td>
+                    <td>
+                        @foreach ($reservation->rooms as $room)
+                        {{ $room->type->type_name }} <br>
+                        @endforeach
+                    </td>
+                    <td class="text-center">
+                        @foreach ($reservation->rooms as $room)
+                        {{ $room->room_name }} <br>
+                        @endforeach
+                    </td>
+
+                    <td class="text-center">{{ $reservation->reservation_date }}</td>
+                    <td class="text-center">{{ $reservation->reservation_checkin }}</td>
+                    <td class="text-center">{{ $reservation->reservation_checkout }}</td>
+                    <td class="text-center">{{ $reservation->reservation_status }}</td>
+                    <td>
+                        <div class="d-flex justify-content-center">
+                            <a href="{{ route('admin.reservation.edit', ['reservation_id' => $reservation->reservation_id]) }}"
+                                class="btn btn-warning btn-sm">Sửa</a>
+
+                        </div>
+
+                    </td>
+                </tr>
+                @endforeach
         </tbody>
     </table>
 </div>
-
-<!-- Modal
-<div class="modal fade" id="delete-confirm" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteConfirmLabel">Xác nhận xóa</h5>
-                <button reservation="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-
-            </div>
-            <div class="modal-footer">
-                <button reservation="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button reservation="button" class="btn btn-danger" id="confirm-delete">Xóa</button>
-            </div>
-        </div>
-    </div>
-</div> -->
 @endsection
-<!-- 
-@section('custom-scripts')
-<script>
-$(document).ready(function() {
-    let formToSubmit;
-
-    $('.delete-reservation-btn').on('click', function(e) {
-        e.preventDefault();
-
-        formToSubmit = $(this).closest('form');
-        const reservationName = $(this).closest('tr').find('td').eq(0).text();
-
-        if (reservationName.length > 0) {
-            $('.modal-body').html(`Bạn có muốn xóa đặt phòng "${reservationName}" không?`);
-        }
-
-        $('#delete-confirm').modal('show'); // Hiển thị modal
-    });
-
-    $('#confirm-delete').on('click', function() {
-        formToSubmit.submit();
-    });
-});
-</script>
-@endsection -->

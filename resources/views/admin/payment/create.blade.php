@@ -14,7 +14,7 @@ Quản lý thanh toán
         <h3 class="text-center title2">Cập nhật đặt phòng</h3>
         <form id="frmCreate" name="frmCreate" action="{{ route('admin.payment.save') }}" method="post">
             @csrf
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label for="employee_id">Nhân viên</label>
                 <select class="form-control" id="employee_id" name="employee_id" required>
                     <option value="">Chọn nhân viên</option>
@@ -22,7 +22,7 @@ Quản lý thanh toán
                     <option value="{{ $employee->employee_id }}">{{ $employee->employee_name }}</option>
                     @endforeach
                 </select>
-            </div>
+            </div> -->
 
             <div class="form-group">
                 <label for="reservation_id">Đơn đặt phòng</label>

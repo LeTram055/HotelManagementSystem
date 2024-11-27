@@ -1,11 +1,11 @@
 @extends('admin.layouts.master')
 
 @section('title')
-Chỉnh sửa thanh toán
+Quản lý thanh toán
 @endsection
 
 @section('feature-title')
-Chỉnh sửa thanh toán
+Quản lý thanh toán
 @endsection
 
 @section('content')
@@ -16,7 +16,7 @@ Chỉnh sửa thanh toán
             @csrf
             <input type="hidden" name="payment_id" value="{{ $payment->payment_id }}">
 
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label for="employee_id">Nhân viên</label>
                 <select class="form-control" id="employee_id" name="employee_id" required>
                     <option value="">Chọn nhân viên</option>
@@ -27,7 +27,7 @@ Chỉnh sửa thanh toán
                     </option>
                     @endforeach
                 </select>
-            </div>
+            </div> -->
 
             <div class="form-group">
                 <label for="payment_method">Phương thức thanh toán</label>
