@@ -28,16 +28,16 @@ class ReservationController extends Controller
         // Lấy danh sách các đơn đặt phòng trong khoảng thời gian
         $reservations = Reservations::where(function ($query) use ($checkin, $checkout) {
             if ($checkin === $checkout) {
-        // Kiểm tra xem start_date có nằm trong khoảng checkin và checkout của đơn đặt phòng không
-        $query->where(function($q) use ($checkin) {
-            $q->where('reservation_checkin', '<=', $checkin)
-              ->where('reservation_checkout', '>=', $checkin);
-        });
-    } else {
-        // Nếu ngày bắt đầu và ngày kết thúc khác nhau, sử dụng whereBetween như bình thường
-        $query->whereBetween('reservation_checkin', [$checkin, $checkout])
-              ->orWhereBetween('reservation_checkout', [$checkin, $checkout]);
-    }
+            // Kiểm tra xem start_date có nằm trong khoảng checkin và checkout của đơn đặt phòng không
+                $query->where(function($q) use ($checkin) {
+                    $q->where('reservation_checkin', '<=', $checkin)
+                    ->where('reservation_checkout', '>=', $checkin);
+                });
+            } else {
+                // Nếu ngày bắt đầu và ngày kết thúc khác nhau, sử dụng whereBetween như bình thường
+                $query->whereBetween('reservation_checkin', [$checkin, $checkout])
+                    ->orWhereBetween('reservation_checkout', [$checkin, $checkout]);
+            }
         })->get();
 
         // Lọc các phòng dựa trên trạng thái và đơn đặt phòng
@@ -129,7 +129,10 @@ class ReservationController extends Controller
 
     public function getCustomerReservations($customerId)
     {
-        $reservations = Reservations::with(['rooms:room_id'])->where('customer_id', $customerId)->get();
+        $reservations = Reservations::with(['rooms:room_id'])
+            ->where('customer_id', $customerId)
+            ->orderBy('reservation_date', 'desc')
+            ->get();
 
         return response()->json($reservations);
     }

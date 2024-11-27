@@ -125,52 +125,43 @@ Quản lý đặt phòng
             $rowClass = 'table-info';
             }
 
-            if ($reservation->reservation_checkin >= $today && $reservation->reservation_status === 'Đã xác nhận')
-            {
-            $rowClass='table-success';
-            }
-
-            if ($reservation->reservation_checkout <= $today) { if ($reservation->reservation_status === 'Đã xác nhận')
+            if ($reservation->reservation_checkin <= $today && $reservation->reservation_status === 'Đã xác nhận')
                 {
-                $rowClass='table-danger';
-                }
-                elseif ($reservation->reservation_status === 'Đã nhận phòng')
-                { $rowClass='table-warning' ;
-                }
+                $rowClass='table-success';
+                if ($reservation->reservation_checkout <= $today && $reservation->reservation_status === 'Đã xác nhận')
+                    {
+                    $rowClass = 'table-danger';
+                    }
+                    }
+                    if ($reservation->reservation_status === 'Đã nhận phòng' && $reservation->reservation_checkout <=
+                        $today) { $rowClass='table-warning' ; } @endphp <tr class="{{ $rowClass }}">
+                        <td class="text-center">{{ $reservation->reservation_id }}</td>
+                        <td>{{ $reservation->customer->customer_name }}</td>
+                        <td>
+                            @foreach ($reservation->rooms as $room)
+                            {{ $room->type->type_name }} <br>
+                            @endforeach
+                        </td>
+                        <td class="text-center">
+                            @foreach ($reservation->rooms as $room)
+                            {{ $room->room_name }} <br>
+                            @endforeach
+                        </td>
 
-                }
+                        <td class="text-center">{{ $reservation->reservation_date }}</td>
+                        <td class="text-center">{{ $reservation->reservation_checkin }}</td>
+                        <td class="text-center">{{ $reservation->reservation_checkout }}</td>
+                        <td class="text-center">{{ $reservation->reservation_status }}</td>
+                        <td>
+                            <div class="d-flex justify-content-center">
+                                <a href="{{ route('admin.reservation.edit', ['reservation_id' => $reservation->reservation_id]) }}"
+                                    class="btn btn-warning btn-sm">Sửa</a>
 
-                @endphp
+                            </div>
 
-
-                <tr class="{{ $rowClass }}">
-                    <td class="text-center">{{ $reservation->reservation_id }}</td>
-                    <td>{{ $reservation->customer->customer_name }}</td>
-                    <td>
-                        @foreach ($reservation->rooms as $room)
-                        {{ $room->type->type_name }} <br>
+                        </td>
+                        </tr>
                         @endforeach
-                    </td>
-                    <td class="text-center">
-                        @foreach ($reservation->rooms as $room)
-                        {{ $room->room_name }} <br>
-                        @endforeach
-                    </td>
-
-                    <td class="text-center">{{ $reservation->reservation_date }}</td>
-                    <td class="text-center">{{ $reservation->reservation_checkin }}</td>
-                    <td class="text-center">{{ $reservation->reservation_checkout }}</td>
-                    <td class="text-center">{{ $reservation->reservation_status }}</td>
-                    <td>
-                        <div class="d-flex justify-content-center">
-                            <a href="{{ route('admin.reservation.edit', ['reservation_id' => $reservation->reservation_id]) }}"
-                                class="btn btn-warning btn-sm">Sửa</a>
-
-                        </div>
-
-                    </td>
-                </tr>
-                @endforeach
         </tbody>
     </table>
 </div>
