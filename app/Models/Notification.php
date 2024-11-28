@@ -16,7 +16,7 @@ class Notification extends Model
         'message',
         'created_at',
     ];
-
+    protected $primaryKey = 'notification_id';
     public $timestamps = false;
     protected $date = [
         'created_at'

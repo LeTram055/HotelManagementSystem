@@ -25,6 +25,8 @@ Route::get('customer/rooms', [ReservationController::class, 'getRoomsDetails']);
 //thong bao
 Route::post('customer/notifications', [NotificationController::class, 'createNotification']);
 Route::get('customer/notifications/{customer_id}', [NotificationController::class, 'getNotifications']);
+Route::delete('customer/notifications/{notification_id}', [NotificationController::class, 'deleteNotification']);
+
 
 //
 Route::get('customer/payment/invoice/{id}', 

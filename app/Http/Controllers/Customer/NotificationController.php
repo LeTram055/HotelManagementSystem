@@ -34,16 +34,19 @@ class NotificationController extends Controller
         return response()->json(['success' => true, 'data' => $notifications], 200);
     }
 
-    public function deleteNotification($id)
+    public function deleteNotification($notification_id)
     {
         try {
-            $notification = Notification::findOrFail($id);
-            $notification->delete();
+            Log::info('Delete notification with id: ' . $notification_id);
+            $notification = Notification::find($notification_id);
+            $notification->destroy($notification_id);
 
             return response()->json(['success' => true, 'message' => 'Thông báo đã được xóa.'], 200);
         } catch (\Exception $e) {
-
+            Log::error('Error deleting notification: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Không thể xóa thông báo.'], 500);
         }
     }
+
+    
 }
