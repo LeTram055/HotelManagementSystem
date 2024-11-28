@@ -26,23 +26,7 @@ Quản lý tài khoản
             </div>
 
 
-            <div class="form-group">
-                <label for="account_role">Vai trò:</label>
-                <select class="form-control" id="account_role" name="account_role" required>
-                    <option value="employee" {{ $account->account_role == 'employee' ? 'selected' : '' }}>Nhân viên
-                    </option>
-                    <option value="customer" {{ $account->account_role == 'customer' ? 'selected' : '' }}>Khách hàng
-                    </option>
-                </select>
-            </div>
-            <div class="form-group" id="userList" style="display:none;">
-                <div id="data-container" data-employees='@json($employees)' data-customers='@json($customers)'
-                    data-account='@json($account)'></div>
-                <label for="user_id">Chọn người dùng:</label>
-                <select class="form-control" id="user_id" name="user_id" required>
-                    <!-- Dữ liệu sẽ được điền bằng JavaScript khi chọn vai trò-->
-                </select>
-            </div>
+
             <div class="form-group">
                 <label for="account_active">Trạng thái:</label>
                 <select class="form-control" id="account_active" name="account_active" required>

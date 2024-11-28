@@ -29,19 +29,14 @@ Quản lý tài khoản
                 <small id="account_password" class="form-text text-danger">{{ $message }}</small>
                 @enderror
             </div>
-            <div class="form-group">
-                <label for="account_role">Vai trò:</label>
-                <select class="form-control" id="account_role" name="account_role" required>
-                    <option value="">Chọn vai trò</option>
-                    <option value="employee">Nhân viên</option>
-                    <option value="customer">Khách hàng</option>
-                </select>
-            </div>
-            <div class="form-group" id="userList" style="display:none;">
-                <div id="data-container" data-employees='@json($employees)' data-customers='@json($customers)'></div>
+
+            <div class="form-group" id="userList">
+
                 <label for="user_id">Chọn người dùng:</label>
                 <select class="form-control" id="user_id" name="user_id" required>
-                    <!-- Dữ liệu sẽ được điền bằng JavaScript khi chọn vai trò-->
+                    @foreach ($employees as $employee)
+                    <option value="{{ $employee->employee_id }}">{{ $employee->employee_name }}</option>
+                    @endforeach
                 </select>
             </div>
             <div class="form-group">
@@ -55,43 +50,4 @@ Quản lý tài khoản
         </form>
     </div>
 </div>
-@endsection
-
-@section('custom-scripts')
-<script>
-// Dữ liệu danh sách nhân viên và khách hàng
-$(document).ready(function() {
-    const dataContainer = $('#data-container');
-    const employees = JSON.parse(dataContainer.attr('data-employees'));
-    const customers = JSON.parse(dataContainer.attr('data-customers'));
-
-    console.log(employees, customers);
-
-    $('#account_role').on('change', function() {
-        const role = $(this).val();
-        const userList = $('#userList');
-        const userSelect = $('#user_id');
-
-        userSelect.empty(); // Xóa danh sách cũ
-
-        if (role === 'employee') {
-            $.each(employees, function(index, employee) {
-                userSelect.append(
-                    `<option value="${employee.employee_id}">${employee.employee_name}</option>`
-                );
-            });
-            userList.show();
-        } else if (role === 'customer') {
-            $.each(customers, function(index, customer) {
-                userSelect.append(
-                    `<option value="${customer.customer_id}">${customer.customer_name}</option>`
-                );
-            });
-            userList.show();
-        } else {
-            userList.hide();
-        }
-    });
-});
-</script>
 @endsection

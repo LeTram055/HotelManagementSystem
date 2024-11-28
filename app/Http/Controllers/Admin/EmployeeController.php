@@ -54,7 +54,7 @@ class EmployeeController extends Controller
     {
         $request->validate([
             'employee_name' => 'required|string',
-            'employee_phone' => 'required|string|regex:/^(09|08|07|05|03)[0-9]{8}$/',
+            'employee_phone' => 'required|string|regex:/^[0-9]{10}$/',
             'employee_email' => 'required|email',
             'employee_address' => 'required|string',
             
@@ -89,7 +89,7 @@ class EmployeeController extends Controller
     {
         $request->validate([
             'employee_name' => 'required|string',
-            'employee_phone' => 'required|string|regex:/^(09|08|07|05|03)[0-9]{8}$/',
+            'employee_phone' => 'required|string|regex:/^[0-9]{10}$/',
             'employee_email' => 'required|email',
             'employee_address' => 'required|string',
             
