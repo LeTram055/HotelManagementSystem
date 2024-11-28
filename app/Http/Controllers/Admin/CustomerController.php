@@ -55,16 +55,17 @@ class CustomerController extends Controller
     public function save(Request $request)
     {
         $request->validate([
-            'customer_cccd' => 'required',
-            'customer_email' => 'email',
+            'customer_cccd' => 'required|unique:customers,customer_cccd',
+            //'customer_email' => 'email',
             'customer_address' => 'required|string',
             'customer_name' => 'required|string',
             
         ], [
         'customer_cccd.required' => 'CCCD không được để trống.',
+        'customer_cccd.unique' => 'CCCD đã tồn tại.',
         
         //'customer_email.required' => 'Email không được để trống.',
-        'customer_email.email' => 'Email không hợp lệ.',
+        //'customer_email.email' => 'Email không hợp lệ.',
         'customer_address.required' => 'Địa chỉ không được để trống.',
         'customer_name.required' => 'Tên không được để trống.',
         'customer_name.string' => 'Tên phải là chuỗi ký tự.',
@@ -90,14 +91,15 @@ class CustomerController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'customer_cccd' => 'required',
-            //'customer_email' => 'required|email',
-            'customer_email' => 'email',
+            'customer_cccd' => 'required|unique:customers,customer_cccd,' . $request->customer_id . ',customer_id',
+            'customer_email' => 'nullable|email',
+            //'customer_email' => 'email',
             'customer_address' => 'required|string',
             'customer_name' => 'required|string',
             
         ], [
         'customer_cccd.required' => 'CCCD không được để trống.',
+        'customer_cccd.unique' => 'CCCD đã tồn tại.',
         
         //'customer_email.required' => 'Email không được để trống.',
         'customer_email.email' => 'Email không hợp lệ.',
