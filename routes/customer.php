@@ -4,6 +4,7 @@
     use App\Http\Controllers\Customer\CustomerController;
     use App\Http\Controllers\Customer\ReservationController;
     use App\Http\Controllers\Customer\NotificationController;
+    use App\Http\Controllers\Customer\PaymentController;
     
 //loai phong
 Route::get('customer/types', [TypeController::class, 'index']);
@@ -24,3 +25,8 @@ Route::get('customer/rooms', [ReservationController::class, 'getRoomsDetails']);
 //thong bao
 Route::post('customer/notifications', [NotificationController::class, 'createNotification']);
 Route::get('customer/notifications/{customer_id}', [NotificationController::class, 'getNotifications']);
+
+//
+Route::get('customer/payment/invoice/{id}', 
+[PaymentController::class, 'exportInvoice'])
+->name('customer.payment.invoice');
