@@ -14,6 +14,7 @@ Route::get('customer/types/{id}', [TypeController::class, 'show']);
 Route::post('customer/register', [CustomerController::class, 'register']);
 Route::post('customer/login', [CustomerController::class, 'login']);
 Route::get('customer/getuserbyusername/{username}', [CustomerController::class, 'getUserByUsername']);
+Route::post('customer/changepassword', [CustomerController::class, 'changePassword']);
 
 //dat phong
 Route::get('customer/available-room-types', [ReservationController::class, 'getAvailableRoomTypes']);

@@ -129,4 +129,36 @@ class CustomerController extends Controller
         ], 200);
     }
 
+    // Đổi mật khẩu cho khách hàng
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'username' => 'required',
+            'current_password' => 'required',
+            'new_password' => 'required|min:8',
+        ],
+        [
+            'username.required' => 'Tên tài khoản không được để trống',
+            'current_password.required' => 'Mật khẩu hiện tại không được để trống',
+            'new_password.required' => 'Mật khẩu mới không được để trống',
+            'new_password.min' => 'Mật khẩu mới phải chứa ít nhất 8 ký tự',
+        ]);
+
+
+        // Tìm tài khoản theo username
+        $account = Accounts::where('account_username', $request->username)->first();
+
+        if (!$account || !Hash::check($request->current_password, $account->account_password)) {
+            return response()->json(['message' => 'Mật khẩu hiện tại không chính xác'], 400);
+        }
+
+        // Cập nhật mật khẩu mới
+        $account->update([
+            'account_password' => Hash::make($request->new_password),
+        ]);
+
+        return response()->json(['message' => 'Đổi mật khẩu thành công'], 200);
+    }
+
+
 }
