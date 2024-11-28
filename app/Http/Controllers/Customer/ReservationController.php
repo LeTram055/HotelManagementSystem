@@ -85,7 +85,7 @@ class ReservationController extends Controller
         $request->validate([
             'customer_id' => 'required|exists:customers,customer_id',
             'checkin' => 'required|date_format:Y-m-d',
-            'checkout' => 'required|date_format:Y-m-d|after:checkin',
+            'checkout' => 'required|date_format:Y-m-d|after_or_equal:checkin',
             'room_ids' => 'required|array|min:1',
             'room_ids.*' => 'exists:rooms,room_id',
         ]);
