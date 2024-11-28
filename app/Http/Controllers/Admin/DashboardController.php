@@ -43,14 +43,14 @@ class DashboardController extends Controller
             foreach ($reservations as $reservation) {
                 if ($reservation->rooms->contains('room_id', $room->room_id)) {
                     $foundInReservation = true;
+                    
                     if ($reservation->reservation_status === 'Đã nhận phòng') {
                         $roomStatusF = 'Đang sử dụng';
+                        break;
                     } elseif ($reservation->reservation_status === 'Đã xác nhận') {
                         $roomStatusF = 'Đã đặt';
-                    } elseif ($reservation->reservation_status === 'Đã trả phòng') {
-                        $roomStatusF = 'Trống';
                     }
-                    break;
+                    
                 }
             }
 
@@ -88,7 +88,8 @@ class DashboardController extends Controller
         ];
 
         // Dữ liệu cho biểu đồ đặt phòng theo ngày
-        $reservationsByDay = Reservations::selectRaw('DATE(reservation_date) as date, COUNT(*) as count')
+        $reservationsByDay = Reservations::where('reservation_status', '!=', 'Đã hủy')
+            ->selectRaw('DATE(reservation_date) as date, COUNT(*) as count')
             ->groupBy('date')
             ->orderBy('date', 'asc')
             ->take(7) // Lấy thống kê 7 ngày gần đây
