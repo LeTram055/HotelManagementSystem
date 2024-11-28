@@ -67,7 +67,7 @@ $(document).ready(function() {
 
         const checkin = new Date(selectedOption.data('checkin'));
         const checkout = new Date(selectedOption.data('checkout'));
-        const days = (checkout - checkin) / (1000 * 60 * 60 * 24); // Tính số ngày
+        const days = (checkout - checkin) / (1000 * 60 * 60 * 24) + 1; // Tính số ngày
 
 
         const rooms = roomsData; // Sử dụng trực tiếp roomsData

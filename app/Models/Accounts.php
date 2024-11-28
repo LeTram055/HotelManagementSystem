@@ -24,14 +24,14 @@ class Accounts extends Authenticatable
     protected $primaryKey = 'account_id';
     public $timestamps = false;
 
-    public function customers()
+    public function customer()
     {
-        return $this->hasMany(Customers::class, 'account_id', 'account_id');
+        return $this->hasOne(Customers::class, 'account_id', 'account_id');
     }
 
-    public function employees()
+    public function employee()
     {
-        return $this->hasMany(Employees::class, 'account_id', 'account_id');
+        return $this->hasOne(Employees::class, 'account_id', 'account_id');
  
  
     }

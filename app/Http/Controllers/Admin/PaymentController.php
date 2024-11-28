@@ -98,7 +98,7 @@ class PaymentController extends Controller
         // Tính toán số ngày lưu trú
         $checkin = strtotime($reservation->reservation_checkin);
         $checkout = strtotime($reservation->reservation_checkout);
-        $days = ($checkout - $checkin) / (60 * 60 * 24);  // Tính số ngày từ ngày checkin và checkout
+        $days = ($checkout - $checkin) / (60 * 60 * 24) + 1;  // Tính số ngày từ ngày checkin và checkout
 
         // Tính tổng giá trị dựa trên giá phòng và số ngày lưu trú
         $totalPrice = 0;
@@ -108,7 +108,7 @@ class PaymentController extends Controller
 
         // Tạo mới Payment
         $payment = new Payments();
-        $payment->employee_id = Auth::user()->employee_id;
+        $payment->employee_id = Auth::user()->employee->employee_id;
         $payment->reservation_id = $request->reservation_id;
         $payment->payment_date = now();
         $payment->payment_price = $totalPrice;
@@ -213,7 +213,7 @@ class PaymentController extends Controller
         $pdf = PDF::loadView('admin.payment.invoice', $invoiceData);
 
         // Xuất file PDF
-        return $pdf->download('invoice_' . $payment->payment_id . '.pdf');
+        return $pdf->download('HoaDonThanhToan_' . $payment->payment_id . '.pdf');
     }
 
 }
