@@ -187,6 +187,8 @@ class ReservationController extends Controller
         
         // Lưu thông tin các phòng đã đặt
         foreach ($request->room_ids as $room_id) {
+            $room = Rooms::find($room_id);
+            $room->status_id = 2; // Phòng đang sử dụng
             $roomReservation = new RoomReservation();
             $roomReservation->reservation_id = $reservation->reservation_id;
             $roomReservation->room_id = (int) $room_id;
