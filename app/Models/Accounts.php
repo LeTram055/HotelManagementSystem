@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 //use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 //class Accounts extends Model implements \Illuminate\Contracts\Auth\Authenticatable
 //class Accounts extends Model implements Authenticatable
 class Accounts extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
     protected $table = 'accounts';
     protected $fillable = [
         'account_username',

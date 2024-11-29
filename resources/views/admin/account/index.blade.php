@@ -85,12 +85,12 @@ Quản lý tài khoản
                     <div class="d-flex justify-content-center">
                         <a href="{{ route('admin.account.edit', ['account_id' => $account->account_id]) }}"
                             class="btn btn-warning btn-sm">Sửa</a>
-                        <!-- <form class="mx-1" name=frmDelete method="post" action="{{ route('admin.account.delete') }}">
+                        <form class="mx-1" name=frmDelete method="post" action="{{ route('admin.account.delete') }}">
                             @csrf
                             <input type="hidden" name="account_id" value="{{ $account->account_id }}">
                             <button account="submit"
                                 class="btn btn-danger btn-sm btn-sm delete-account-btn">Xóa</button>
-                        </form> -->
+                        </form>
                     </div>
 
                 </td>
@@ -101,7 +101,7 @@ Quản lý tài khoản
 </div>
 
 <!-- Modal -->
-<!-- <div class="modal fade" id="delete-confirm" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmLabel"
+<div class="modal fade" id="delete-confirm" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -118,10 +118,10 @@ Quản lý tài khoản
             </div>
         </div>
     </div>
-</div> -->
+</div>
 @endsection
 
-<!-- @section('custom-scripts')
+@section('custom-scripts')
 <script>
 $(document).ready(function() {
     let formToSubmit;
@@ -144,4 +144,4 @@ $(document).ready(function() {
     });
 });
 </script>
-@endsection -->
+@endsection
