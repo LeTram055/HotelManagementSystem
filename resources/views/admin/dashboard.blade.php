@@ -93,7 +93,7 @@ Bảng điều khiển
 
         <div class="col-md-6">
             <div class="card mb-3">
-                <div class="card-header">Đặt phòng theo ngày (7 ngày gần đây)</div>
+                <div class="card-header">Đặt phòng theo ngày</div>
                 <div class="card-body chart-container chart-body">
                     <canvas id="reservationsChart" data-labels="{{json_encode($labels)}}"
                         data-data="{{ json_encode($data)}}"></canvas>
