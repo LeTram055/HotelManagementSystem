@@ -126,7 +126,7 @@ class EmployeeController extends Controller
             return redirect()->route('admin.employee.index');
         }
 
-        $employee->destroy($request->employee_id);
+        $employee->delete();
         Session::flash('alert-info', 'Xóa thành công ^^~!!!');
         return redirect()->route('admin.employee.index');
     }

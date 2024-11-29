@@ -151,7 +151,7 @@ class TypeController extends Controller
         $type->facilities()->detach();
 
         // Xóa loại phòng
-        $type->destroy($request->type_id);
+        $type->delete();
         Session::flash('alert-info', 'Xóa thành công ^^~!!!');
         return redirect()->route('admin.type.index');
     }

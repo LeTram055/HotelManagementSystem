@@ -151,7 +151,7 @@ class TypeImageController extends Controller
         if ($typeImage) {
             $oldImage = $typeImage->image_url;
             Storage::disk('public')->delete('uploads/' . $oldImage);
-            $typeImage->destroy($request->image_id);
+            $typeImage->delete();
             Session::flash('alert-info', 'Xóa thành công ^^~!!!');
         } else {
             Session::flash('alert-danger', 'Không tìm thấy hình ảnh.');

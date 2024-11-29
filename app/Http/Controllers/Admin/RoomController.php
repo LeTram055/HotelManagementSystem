@@ -234,7 +234,7 @@ class RoomController extends Controller
             return redirect()->route('admin.room.index');
         }
 
-        $room->destroy($request->room_id);
+        $room->delete();
         Session::flash('alert-info', 'Xóa thành công ^^~!!!');
         return redirect()->route('admin.room.index');
     }

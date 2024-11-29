@@ -102,7 +102,7 @@ class RoomStatusController extends Controller
         return redirect()->route('admin.roomstatus.index');
     }
     
-        $roomStatus->destroy($request->status_id);
+        $roomStatus->delete();
         Session::flash('alert-info', 'Xóa thành công ^^~!!!');
         return redirect()->route('admin.roomstatus.index');
     }

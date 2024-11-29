@@ -106,7 +106,7 @@ class FacilityController extends Controller
         return redirect()->route('admin.facility.index');
         }
 
-        $facility->destroy($request->facility_id);
+        $facility->delete();
         Session::flash('alert-info', 'Xóa thành công ^^~!!!');
         return redirect()->route('admin.facility.index');
     }

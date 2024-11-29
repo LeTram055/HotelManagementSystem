@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RoomStatuses extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
     protected $table = 'room_statuses';
     protected $fillable = [
         'status_name',
