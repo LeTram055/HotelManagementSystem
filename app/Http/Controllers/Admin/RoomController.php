@@ -227,6 +227,13 @@ class RoomController extends Controller
         ]);
         
         $room = Rooms::find($request->room_id);
+
+        // Kiểm tra xem phòng đã được đặt chưa
+        if($room->reservations()->exists()) {
+            Session::flash('alert-danger', 'Không thể xóa phòng đã được đặt.');
+            return redirect()->route('admin.room.index');
+        }
+
         $room->destroy($request->room_id);
         Session::flash('alert-info', 'Xóa thành công ^^~!!!');
         return redirect()->route('admin.room.index');

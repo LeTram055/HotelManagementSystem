@@ -19,7 +19,7 @@ Bảng điều khiển
 </div>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="card text-white bg-primary mb-3">
                 <div class="card-header">Tổng số phòng</div>
                 <div class="card-body">
@@ -28,16 +28,16 @@ Bảng điều khiển
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="card text-white bg-success mb-3">
                 <div class="card-header">Phòng trống</div>
                 <div class="card-body">
                     <h5 class="card-title">{{ $availableRooms }}</h5>
-                    <p class="card-text">Số phòng hiện đang trống và sẵn sàng cho thuê.</p>
+                    <p class="card-text">Số phòng hiện đang trống.</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="card text-white bg-warning mb-3">
                 <div class="card-header">Tổng số khách hàng</div>
                 <div class="card-body">
@@ -46,15 +46,7 @@ Bảng điều khiển
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-info mb-3">
-                <div class="card-header">Tổng số nhân viên</div>
-                <div class="card-body">
-                    <h5 class="card-title">{{ $totalEmployees }}</h5>
-                    <p class="card-text">Tổng số nhân viên trong khách sạn.</p>
-                </div>
-            </div>
-        </div>
+
     </div>
 
     <div class="row">

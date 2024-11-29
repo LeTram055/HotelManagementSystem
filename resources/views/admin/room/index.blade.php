@@ -9,6 +9,15 @@ Quản lý phòng
 @endsection
 
 @section('content')
+<div class="flash-message">
+    @foreach (['danger', 'warning', 'success', 'info'] as $msg)
+    @if(Session::has('alert-' . $msg))
+    <p class="alert alert-{{ $msg }}">{{ Session::get('alert-' . $msg) }} <button type="button" class="btn-close"
+            data-bs-dismiss="alert" aria-label="Close"></button></p>
+    @endif
+    @endforeach
+</div>
+
 <div class="container">
     @if(Auth::user() && Auth::user()->account_role == 'admin')
     <div class="d-flex justify-content-between mb-3">
@@ -102,8 +111,8 @@ Quản lý phòng
                             <form class="mx-1" name=frmDelete method="post" action="{{ route('admin.room.delete') }}">
                                 @csrf
                                 <input type="hidden" name="room_id" value="{{ $room->room_id }}">
-                                <button type="submit"
-                                    class="btn btn-outline-dark btn-sm btn-sm delete-room-btn">Xóa</button>
+                                <button type="submit" class="btn btn-outline-dark btn-sm btn-sm delete-room-btn"
+                                    data-room-name="{{ $room->room_name }}">Xóa</button>
                             </form>
                         </div>
                         @endif
@@ -115,4 +124,42 @@ Quản lý phòng
     </div>
     @endforeach
 </div>
-@endsection
+<div class="modal fade" id="delete-confirm" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmLabel">Xác nhận xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body"></div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="confirm-delete">Xóa</button>
+            </div>
+        </div>
+    </div>
+
+    @endsection
+
+    @section('custom-scripts')
+    <script>
+    $(document).ready(function() {
+        let formToSubmit;
+        $('.delete-room-btn').on('click', function(e) {
+            e.preventDefault();
+            formToSubmit = $(this).closest('form');
+            const roomName = $(this).data('room-name');
+            if (roomName) {
+                $('.modal-body').html(`Bạn có muốn xóa phòng "${roomName}" không?`);
+            }
+            $('#delete-confirm').modal('show'); // Hiển thị modal
+        });
+        $('#confirm-delete').on('click', function() {
+            formToSubmit.submit();
+        });
+    });
+    </script>
+    @endsection

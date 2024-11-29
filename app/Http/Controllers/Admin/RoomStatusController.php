@@ -96,6 +96,12 @@ class RoomStatusController extends Controller
         ]);
         
         $roomStatus = RoomStatuses::find($request->status_id);
+
+        if ($roomStatus->rooms()->exists()) { // Giả sử bạn đã định nghĩa quan hệ trong model RoomStatuses
+        Session::flash('alert-danger', 'Không thể xóa trạng thái này vì nó đang được sử dụng trong phòng.');
+        return redirect()->route('admin.roomstatus.index');
+    }
+    
         $roomStatus->destroy($request->status_id);
         Session::flash('alert-info', 'Xóa thành công ^^~!!!');
         return redirect()->route('admin.roomstatus.index');

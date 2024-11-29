@@ -120,6 +120,12 @@ class EmployeeController extends Controller
         ]);
         
         $employee = Employees::find($request->employee_id);
+
+        if($employee->payments()->exists()){
+            Session::flash('alert-danger', 'Không thể xóa nhân viên này vì đã có hóa đơn do nhân viên xư lý.');
+            return redirect()->route('admin.employee.index');
+        }
+
         $employee->destroy($request->employee_id);
         Session::flash('alert-info', 'Xóa thành công ^^~!!!');
         return redirect()->route('admin.employee.index');

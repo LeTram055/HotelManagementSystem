@@ -54,9 +54,9 @@ class FacilityController extends Controller
             'facility_name' => 'required|string|unique:facilities,facility_name',
             'facility_description' => 'required|string',
         ], [
-            'facility_name.required' => 'Vui lòng nhập tên tiện ích',
-            'facility_name.unique' => 'Tên tiện ích đã tồn tại',
-            'facility_description.required' => 'Vui lòng nhập mô tả tiện ích',
+            'facility_name.required' => 'Vui lòng nhập tên thiết bị',
+            'facility_name.unique' => 'Tên thiết bị đã tồn tại',
+            'facility_description.required' => 'Vui lòng nhập mô tả thiết bị',
         ]);
 
         $facility = new Facilities();
@@ -80,9 +80,9 @@ class FacilityController extends Controller
             'facility_name' => 'required|string|unique:facilities,facility_name',
             'facility_description' => 'required|string',
         ], [
-            'facility_name.required' => 'Vui lòng nhập tên tiện ích',
-            'facility_name.unique' => 'Tên tiện ích đã tồn tại',
-            'facility_description.required' => 'Vui lòng nhập mô tả tiện ích',
+            'facility_name.required' => 'Vui lòng nhập tên thiết bị',
+            'facility_name.unique' => 'Tên thiết bị đã tồn tại',
+            'facility_description.required' => 'Vui lòng nhập mô tả thiết bị',
         ]);
 
         $facility = Facilities::find($request->facility_id);
@@ -100,6 +100,12 @@ class FacilityController extends Controller
         ]);
         
         $facility = Facilities::find($request->facility_id);
+
+        if ($facility->types()->exists()) { // Giả sử bạn đã định nghĩa quan hệ trong model RoomStatuses
+        Session::flash('alert-danger', 'Không thể xóa thiết bị này vì nó đang được sử dụng trong loại phòng.');
+        return redirect()->route('admin.facility.index');
+        }
+
         $facility->destroy($request->facility_id);
         Session::flash('alert-info', 'Xóa thành công ^^~!!!');
         return redirect()->route('admin.facility.index');

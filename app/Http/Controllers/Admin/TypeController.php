@@ -142,6 +142,11 @@ class TypeController extends Controller
         
         $type = Types::find($request->type_id);
 
+        if ($type->rooms->count() > 0) {
+            Session::flash('alert-danger', 'Không thể xóa loại phòng này vì còn phòng thuộc loại phòng này.');
+            return redirect()->route('admin.type.index');
+        }
+
         // Xóa các tiện nghi của loại phòng
         $type->facilities()->detach();
 
